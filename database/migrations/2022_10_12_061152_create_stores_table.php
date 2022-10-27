@@ -19,11 +19,21 @@ return new class extends Migration
             $table->string('address_detail');
             $table->timestamps();
 
-            $table->unsignedBigInteger('province_address_id');
-            $table->unsignedBigInteger('district_address_id');
-            $table->unsignedBigInteger('ward_address_id');
+            $table->unsignedBigInteger('province_address_id')->nullable();
+            $table->string('province_address_name')->nullable();
+            $table->unsignedBigInteger('district_address_id')->nullable();
+            $table->string('district_address_name')->nullable();
+            $table->unsignedBigInteger('ward_address_id')->nullable();
+            $table->string('ward_address_name')->nullable();
             $table->unsignedBigInteger('created_by_id')->nullable();
             $table->unsignedBigInteger('updated_by_id')->nullable();
+
+            $table->foreign('province_address_id')->references('id')->on('category_vn_provinces')->onDelete('cascade');
+            $table->foreign('district_address_id')->references('id')->on('category_vn_districts')->onDelete('cascade');
+            $table->foreign('ward_address_id')->references('id')->on('category_vn_wards')->onDelete('cascade');
+
+            $table->foreign('created_by_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('updated_by_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

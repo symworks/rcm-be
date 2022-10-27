@@ -17,11 +17,17 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
 
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('category_role_id');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('category_role_id')->nullable();
+            $table->string('category_role_name')->nullable();
+
+            $table->unsignedBigInteger('created_by_id')->nullable();
+            $table->unsignedBigInteger('updated_by_id')->nullable();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('category_role_id')->references('id')->on('category_roles')->onDelete('cascade');
+            $table->foreign('created_by_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('updated_by_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateCategoryRoleRequest;
 use App\Models\CategoryRole;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @OA\Info(
@@ -54,7 +55,13 @@ class CategoryRoleController extends Controller
 
         $results = [];
 
-        $queryBuilder = CategoryRole::select('*');
+        $queryBuilder = DB::table('category_roles');
+        if ($request->has('fields')) {
+            $queryBuilder = $queryBuilder->select($request->fields);
+        } else {
+            $queryBuilder = $queryBuilder->select('*');
+        }
+
         if ($request->has('match_col') && $request->has('match_key')) {
             $queryBuilder = $queryBuilder->where($request->match_col, $request->match_key);
         }

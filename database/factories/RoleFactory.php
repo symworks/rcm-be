@@ -19,11 +19,12 @@ class RoleFactory extends Factory
     public function definition()
     {
         $users = User::pluck('id')->toArray();
-        $categoryRoles = CategoryRole::pluck('id')->toArray();
+        $categoryRole = fake()->randomElement(CategoryRole::all());
         return [
             //
             'user_id' => fake()->randomElement($users),
-            'category_role_id' => fake()->randomElement($categoryRoles),
+            'category_role_id' => $categoryRole->id,
+            'category_role_name' => $categoryRole->name,
         ];
     }
 }

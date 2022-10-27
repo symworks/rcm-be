@@ -23,6 +23,6 @@ class CategoryVnDistrictSeeder extends Seeder
         $district->category_vn_province_id = 1;
         $district->save();
 
-        CategoryVnDistrict::factory()->count(200)->create();
+        CategoryVnDistrict::factory()->count(100)->create();
     }
 }

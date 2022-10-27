@@ -29,7 +29,6 @@ use App\Http\Controllers\StoreController;
 use App\Http\Controllers\UserController;
 use App\Models\CategoryCurrency;
 use App\Models\CategoryNation;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -148,8 +147,24 @@ Route::post('/user', [UserController::class, 'store'])
 Route::patch('/user', [UserController::class, 'update'])
     ->middleware('role:Admin');
 
+Route::patch('/user/change_password', [UserController::class, 'changePassword'])
+    ->middleware('role:Standard');
+
 Route::delete('/user/{id}', [UserController::class, 'destroy'])
     ->middleware('role:Admin');
+
+// Role
+Route::get('/role', [RoleController::class, 'index'])
+    ->middleware('role:Admin');
+
+Route::post('/role', [RoleController::class, 'store'])
+    ->middleware('role:SupperUser');
+
+Route::patch('/role', [RoleController::class, 'update'])
+    ->middleware('role:SupperUser');
+
+Route::delete('/user/{id}', [RoleController::class, 'destroy'])
+    ->middleware('role:SupperUser');
 
 // Product
 Route::get('/product', [ProductController::class, 'index']);
@@ -164,6 +179,30 @@ Route::patch('/product_type', [ProductTypeController::class, 'update'])
     ->middleware('role:Admin');
 
 Route::delete('/product_type/{id}', [ProductTypeController::class, 'destroy'])
+    ->middleware('role:Admin');
+
+// Product method
+Route::get('/payment_method', [PaymentMethodController::class, 'index']);
+
+Route::post('/payment_method', [PaymentMethodController::class, 'store'])
+    ->middleware('role:Admin');
+
+Route::patch('/payment_method', [PaymentMethodController::class, 'update'])
+    ->middleware('role:Admin');
+
+Route::delete('/payment_method/{id}', [PaymentMethodController::class, 'destroy'])
+    ->middleware('role:Admin');
+
+// Store
+Route::get('/store', [StoreController::class, 'index']);
+
+Route::post('/store', [StoreController::class, 'store'])
+    ->middleware('role:Admin');
+
+Route::patch('/store', [StoreController::class, 'update'])
+    ->middleware('role:Admin');
+
+Route::delete('/store', [StoreController::class, 'destroy'])
     ->middleware('role:Admin');
 
 // Product Brand
@@ -195,9 +234,6 @@ Route::get('/product_evaluate/with_created_user', [ProductEvaluateController::cl
 
 Route::post('/product_evaluate', [ProductEvaluateController::class, 'anonymousStore']);
 
-// Store
-Route::get('/store/select', [StoreController::class, 'indexNoPaginate']);
-
 // Product Order
 Route::get('/product_order', [ProductOrderController::class, 'index']);
 
@@ -207,8 +243,6 @@ Route::patch('/product_order/select_method', [ProductOrderController::class, 'se
 
 // Product Order Detail
 Route::post('/product_order_detail', [ProductOrderDetailController::class, 'store']);
-
-Route::get('/payment_method', [PaymentMethodController::class, 'index']);
 
 Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::get('/role/{user_id}', [RoleController::class, 'index']);

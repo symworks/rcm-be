@@ -75,7 +75,6 @@ class UserController extends Controller
             'name' => ['required','string','max:255'],
             'email' => ['required', 'string', 'max:255'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'avatar' => ['required', 'string', 'max:255'],
         ]);
 
         $user = new User();
@@ -84,7 +83,7 @@ class UserController extends Controller
         $user->password = Hash::make($request->password);
         $user->anonymous_user = false;
         $user->status = User::STATUS_NEED_EMAIL_VERIFICATION;
-        $user->status = "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200";
+        $user->avatar = "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200";
         $user->created_by_id = $request->user()->id;
         $user->save();
 
@@ -103,7 +102,6 @@ class UserController extends Controller
             [
                 'id' => ['required', 'numeric'],
                 'name' => ['required','string','max:255'],
-                'password' => ['required', 'confirmed', Rules\Password::defaults()],
                 'avatar' => ['required', 'string', 'max:255'],
             ]
         );
@@ -128,14 +126,67 @@ class UserController extends Controller
                     ];
                 }
             }
-        }            
+        }
 
         $affected = User::where('id', $request->id)
         ->update([
             'name' => $request->name,
-            'password' => Hash::make($request->password),
             'avatar' => $request->avatar,
             'updated_by_id' => $request->user()->id,
+        ]);
+
+        return response()->json(
+            [
+                'error_code' => 200,
+                'msg' => 'Successfully',
+                'payload' => [
+                    'updatedCount' => $affected
+                ]
+            ]
+        );
+    }
+
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'id' => ['required', 'numeric'],
+            'password' => ['required', 'string', 'max:255'],
+            'confirmation_password' => ['required', 'string', 'max:255'],
+        ]);
+
+        if ($request->password != $request->confirmation_password) {
+            return [
+                'error_code' => 400,
+                'msg' => 'Confirmation password not match',
+            ];
+        }
+
+        if ($request->user()->id != $request->id) {
+            $user = User::find($request->id);
+            if (!$user) {
+                return [
+                    'error_code' => 400,
+                    'msg' => 'User not exist',
+                ];
+            }
+
+            $currentRoles = $request->user()->roles;
+            $targetRoles = $user->roles;
+
+            if (!User::hasRole($currentRoles, "SupperUser") && User::hasRole($currentRoles, "Admin")) {
+                if (User::hasRole($targetRoles, "SupperUser") || User::hasRole($targetRoles, "Admin")) {
+                    return [
+                        'error_code' => 200,
+                        'msg' => 'Permission denied',
+                    ];
+                }
+            }
+        }
+
+        
+        $affected = User::where('id', $request->id)
+        ->update([
+            'password' => Hash::make($request->password),
         ]);
 
         return response()->json(

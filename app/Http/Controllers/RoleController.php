@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
-use App\Models\CategoryRole;
 use App\Models\Role;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RoleController extends Controller
 {
@@ -14,13 +15,44 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($user_id)
+    public function index(Request $request)
     {
         //
+        $perPage = 15;
+        if ($request->has('per_page')) {
+            $perPage = $request->per_page;
+        }
+
+        $results = [];
+        $queryBuilder = DB::table('roles');
+        if ($request->has('fields')) {
+            $queryBuilder = $queryBuilder->select($request->fields);
+        } else {
+            $queryBuilder = $queryBuilder->select('*');
+        }
+
+        if ($request->has('match_col') && $request->has('match_col')) {
+            $queryBuilder = $queryBuilder->where($request->match_col, $request->match_key);
+        }
+
+        if ($request->has('find_col') && $request->has('find_key')) {
+            $queryBuilder = $queryBuilder->where($request->find_col, 'like', '%'.$request->find_key.'%');
+        }
+
+        if ($request->has('order_col') && $request->has('order_key')) {
+            $queryBuilder = $queryBuilder->orderBy($request->order_col, $request->order_key);
+        }
+
+        if (!$request->has('use_paginate') || $request->use_paginate == 'true') {
+            $results = $queryBuilder->paginate($perPage);
+        } else {
+            $results = $queryBuilder->get();
+        }
+
         return [
             'error_code' => 200,
             'msg' => 'Successfully',
-            'payload' => Role::where('user_id', $user_id)->paginate(15),
+            'payload' => $results,
         ];
     }
 
@@ -40,16 +72,22 @@ class RoleController extends Controller
      * @param  \App\Http\Requests\StoreRoleRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreRoleRequest $request)
+    public function store(Request $request)
     {
         //
         $request->validate([
             'user_id' => ['required', 'integer'],
             'category_role_id' => ['required', 'integer'],
+            'category_role_name' => ['required', 'string'],
         ]);
 
         $role = new Role();
-        $role->fill($request->all());
+        $role->user_id = $request->user_id;
+        $role->category_role_id = $request->category_role_id;
+        $role->category_role_name = $request->category_role_name;
+
+        $role->created_by_id = $request->user()->id;
+
         $role->save();
 
         return response()->json(
@@ -92,18 +130,23 @@ class RoleController extends Controller
      * @param  \App\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateRoleRequest $request, $id)
+    public function update(Request $request, $id)
     {
         //
         $request->validate([
-            'user_id' => ['required', 'integer'],
-            'category_role_id' => ['required', 'integer'],
+            'id' => ['required', 'numeric'],
+            'user_id' => ['required', 'numeric'],
+            'category_role_id' => ['required', 'numeric'],
+            'category_role_name' => ['required', 'string'],
         ]);
 
-        $role = new Role();
-        $role->fill($request->all());
 
-        $affected = Role::where('id', $id)->update($role->toArray());
+        $affected = Role::where('id', $id)->update([
+            'user_id' => $request->user_id,
+            'category_role_id' => $request->category_role_id,
+            'category_role_name' => $request->category_role_name,
+            'updated_by_id' => $request->user()->id,
+        ]);
 
         return response()->json(
             [
@@ -125,18 +168,15 @@ class RoleController extends Controller
     public function destroy($id)
     {
         //
-        $existRole = Role::find($id);
-        if (!$existRole) {
-            return response()->json(
-                [
-                    'error_code' => 400,
-                    'msg' => 'Invalid Role ID',
-                    'payload' => null,
-                ]
-            );
+        $role = Role::find($id);
+        if (!$role) {
+            return response()->json([
+                'error_code' => 400,
+                'msg' => 'Invalid Role ID',
+            ]);
         }
 
-        $affected = $existRole->delete();
+        $affected = $role->delete();
         return response()->json(
             [
                 'error_code' => 200,

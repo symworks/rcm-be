@@ -16,6 +16,6 @@ class CategoryVnWardSeeder extends Seeder
     public function run()
     {
         //
-        CategoryVnWard::factory()->count(500)->create();
+        CategoryVnWard::factory()->count(2000)->create();
     }
 }

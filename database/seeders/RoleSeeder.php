@@ -19,6 +19,7 @@ class RoleSeeder extends Seeder
         $role = new Role();
         $role->user_id = 1;
         $role->category_role_id = 1;
+        $role->category_role_name = "SupperUser";
 
         $role->save();
 
