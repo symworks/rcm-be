@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreProductRequest;
-use App\Http\Requests\UpdateProductRequest;
-use App\Models\Product;
+use App\Http\Requests\StoreCategoryProductTagRequest;
+use App\Http\Requests\UpdateCategoryProductTagRequest;
+use App\Models\CategoryProductTag;
 
-class ProductController extends Controller
+class CategoryProductTagController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,10 +16,6 @@ class ProductController extends Controller
     public function index()
     {
         //
-        return [
-            'code' => 200,
-            'msg' => 'successfully',
-        ];
     }
 
     /**
@@ -35,10 +31,10 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreProductRequest  $request
+     * @param  \App\Http\Requests\StoreCategoryProductTagRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreProductRequest $request)
+    public function store(StoreCategoryProductTagRequest $request)
     {
         //
     }
@@ -46,10 +42,10 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Product  $product
+     * @param  \App\Models\CategoryProductTag  $categoryProductTag
      * @return \Illuminate\Http\Response
      */
-    public function show(Product $product)
+    public function show(CategoryProductTag $categoryProductTag)
     {
         //
     }
@@ -57,10 +53,10 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Product  $product
+     * @param  \App\Models\CategoryProductTag  $categoryProductTag
      * @return \Illuminate\Http\Response
      */
-    public function edit(Product $product)
+    public function edit(CategoryProductTag $categoryProductTag)
     {
         //
     }
@@ -68,11 +64,11 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateProductRequest  $request
-     * @param  \App\Models\Product  $product
+     * @param  \App\Http\Requests\UpdateCategoryProductTagRequest  $request
+     * @param  \App\Models\CategoryProductTag  $categoryProductTag
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateProductRequest $request, Product $product)
+    public function update(UpdateCategoryProductTagRequest $request, CategoryProductTag $categoryProductTag)
     {
         //
     }
@@ -80,10 +76,10 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Product  $product
+     * @param  \App\Models\CategoryProductTag  $categoryProductTag
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
+    public function destroy(CategoryProductTag $categoryProductTag)
     {
         //
     }

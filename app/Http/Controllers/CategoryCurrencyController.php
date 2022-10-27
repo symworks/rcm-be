@@ -16,6 +16,11 @@ class CategoryCurrencyController extends Controller
     public function index()
     {
         //
+        return [
+            'error_code' => 200,
+            'msg' => 'Successfully',
+            'payload' => CategoryCurrency::paginate(15),
+        ];
     }
 
     /**
@@ -37,6 +42,26 @@ class CategoryCurrencyController extends Controller
     public function store(StoreCategoryCurrencyRequest $request)
     {
         //
+        $request->validate([
+            'code' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
+
+            'category_nation_id' => ['required', 'integer'],
+        ]);
+
+        $categoryCurrency = new CategoryCurrency();
+        $categoryCurrency->fill($request->all());
+        $categoryCurrency->save();
+
+        return response()->json(
+            [
+                'error_code' => 200,
+                'msg' => 'Successfully',
+                'payload' => [
+                    'insertedId' => $categoryCurrency->id
+                ]
+            ]
+        );
     }
 
     /**
@@ -68,9 +93,31 @@ class CategoryCurrencyController extends Controller
      * @param  \App\Models\CategoryCurrency  $categoryCurrency
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateCategoryCurrencyRequest $request, CategoryCurrency $categoryCurrency)
+    public function update(UpdateCategoryCurrencyRequest $request, $id)
     {
         //
+        $request->validate([
+            'code' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
+
+            'category_nation_id' => ['required', 'integer'],
+        ]);
+
+        $categoryCurrency = new CategoryCurrency();
+        $categoryCurrency->fill($request->all());
+
+        $affected = CategoryCurrency::where('id', $id)->update($categoryCurrency->toArray());
+
+        return response()->json(
+            [
+                'error_code' => 200,
+                'msg' => 'Successfully',
+                'payload' => [
+                    'updatedCount' => $affected,
+                ]
+            ]
+        );
+
     }
 
     /**
@@ -79,8 +126,29 @@ class CategoryCurrencyController extends Controller
      * @param  \App\Models\CategoryCurrency  $categoryCurrency
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CategoryCurrency $categoryCurrency)
+    public function destroy($id)
     {
         //
+        $existCategoryCurrency = CategoryCurrency::find($id);
+        if (!$existCategoryCurrency) {
+            return response()->json(
+                [
+                    'error_code' => 400,
+                    'msg' => 'Invalid category category ID',
+                    'payload' => null,
+                ]
+            );
+        }
+
+        $affected = $existCategoryCurrency->delete();
+        return response()->json(
+            [
+                'error_code' => 200,
+                'msg' => 'Successfully',
+                'payload' => [
+                    'deletedId' => $affected,
+                ]
+            ]
+        );
     }
 }

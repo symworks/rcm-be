@@ -23,6 +23,10 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
+                return response()->json([
+                    'error_code' => 400,
+                    'msg' => 'Api serve guest',
+                ]);
                 return redirect(RouteServiceProvider::HOME);
             }
         }

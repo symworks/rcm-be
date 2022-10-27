@@ -16,6 +16,11 @@ class ProductBrandController extends Controller
     public function index()
     {
         //
+        return [
+            'error_code' => 200,
+            'msg' => 'Successfully',
+            'payload' => ProductBrand::paginate(15),
+        ];
     }
 
     /**
@@ -37,6 +42,28 @@ class ProductBrandController extends Controller
     public function store(StoreProductBrandRequest $request)
     {
         //
+        $request->validate(
+            [
+                'name' => ['required', 'string', 'max:255'],
+                'logo' => ['required', 'string', 'max:255'],
+            ]
+        );
+
+        $productBrand = new ProductBrand();
+        $productBrand->fill($request->all());
+        $productBrand->created_by_id = $request->user()->id;
+        $productBrand->updated_by_id = $request->user()->id;
+        $productBrand->save();
+
+        return response()->json(
+            [
+                'error_code' => 200,
+                'msg' => 'Successfully',
+                'payload' => [
+                    'insertedId' => $productBrand->id,
+                ]
+            ]
+        );
     }
 
     /**
@@ -68,9 +95,30 @@ class ProductBrandController extends Controller
      * @param  \App\Models\ProductBrand  $productBrand
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateProductBrandRequest $request, ProductBrand $productBrand)
+    public function update(UpdateProductBrandRequest $request, $id)
     {
         //
+        $request->validate(
+            [
+                'name' => ['required', 'string', 'max:255'],
+                'logo' => ['required', 'string', 'max:255'],
+            ]
+        );
+
+        $productBrand = new ProductBrand();
+        $productBrand->fill($request->all());
+
+        $affected = ProductBrand::where('id', $id)->update($productBrand->toArray());
+
+        return response()->json(
+            [
+                'error_code' => 200,
+                'msg' => 'Successfully',
+                'payload' => [
+                    'updatedCount' => $affected,
+                ]
+            ]
+        );
     }
 
     /**
@@ -79,8 +127,29 @@ class ProductBrandController extends Controller
      * @param  \App\Models\ProductBrand  $productBrand
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ProductBrand $productBrand)
+    public function destroy($id)
     {
         //
+        $existProductBrand = ProductBrand::find($id);
+        if (!$existProductBrand) {
+            return response()->json(
+                [
+                    'error_code' => 400,
+                    'msg' => 'Invalid ProductBrand ID',
+                    'payload' => null
+                ]
+            );
+        }
+
+        $affected = $existProductBrand->delete();
+        return response()->json(
+            [
+                'error_code' => 200,
+                'msg' => 'Successfully',
+                'payload' => [
+                    'deletedId' => $affected,
+                ]
+            ]
+        );
     }
 }

@@ -15,6 +15,8 @@ return new class extends Migration
     {
         Schema::create('product_brands', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('logo');
             $table->timestamps();
 
             $table->unsignedBigInteger('created_by_id');

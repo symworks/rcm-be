@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCategoryNationRequest;
 use App\Http\Requests\UpdateCategoryNationRequest;
 use App\Models\CategoryNation;
+use Illuminate\Support\Facades\DB;
 
 class CategoryNationController extends Controller
 {
@@ -16,6 +17,13 @@ class CategoryNationController extends Controller
     public function index()
     {
         //
+        return response()->json(
+            [
+                'error_code' => 200,
+                'msg' => 'Successfully',
+                'payload' => CategoryNation::paginate(15),
+            ]
+        );
     }
 
     /**
@@ -37,6 +45,22 @@ class CategoryNationController extends Controller
     public function store(StoreCategoryNationRequest $request)
     {
         //
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+        ]);
+
+        $categoryNation = new CategoryNation($request->all());
+        $categoryNation->save();
+
+        return response()->json(
+            [
+                'error_code' => 200,
+                'msg' => 'Successfully',
+                'payload' => [
+                    'insertedId' => $categoryNation,
+                ]
+            ]
+        );
     }
 
     /**
@@ -68,9 +92,27 @@ class CategoryNationController extends Controller
      * @param  \App\Models\CategoryNation  $categoryNation
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateCategoryNationRequest $request, CategoryNation $categoryNation)
+    public function update(UpdateCategoryNationRequest $request, $id)
     {
         //
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+        ]);
+
+        $categoryNation = new CategoryNation();
+        $categoryNation->fill($request->all());
+
+        $affected = CategoryNation::where('id', $id)->update($categoryNation->toArray());
+
+        return response()->json(
+            [
+                'error_code' => 200,
+                'msg' => 'Successfully',
+                'payload' => [
+                    'updatedCount' => $affected
+                ]
+            ]
+        );
     }
 
     /**
@@ -79,8 +121,29 @@ class CategoryNationController extends Controller
      * @param  \App\Models\CategoryNation  $categoryNation
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CategoryNation $categoryNation)
+    public function destroy($id)
     {
         //
+        $existCategoryNation = CategoryNation::find($id);
+        if (!$existCategoryNation) {
+            return response()->json(
+                [
+                    'error_code' => 400,
+                    'msg' => 'Invalid Category Nation ID',
+                    'payload' => null
+                ]
+            );
+        }
+
+        $affected = $existCategoryNation->delete();
+        return response()->json(
+            [
+                'error_code' => 200,
+                'msg' => 'Successfully',
+                'payload' => [
+                    'deletedId' => $affected,
+                ]
+            ]
+        );
     }
 }

@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Validation\Rules\Unique;
 
 return new class extends Migration
 {
@@ -14,11 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('category_roles', function (Blueprint $table) {
+        Schema::create('category_product_tags', function (Blueprint $table) {
             $table->id();
-            $table->string('code')->unique();
-            $table->string('name')->unique();
-            $table->boolean('is_system_role');
             $table->timestamps();
         });
     }
@@ -30,6 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('category_roles');
+        Schema::dropIfExists('category_product_tags');
     }
 };

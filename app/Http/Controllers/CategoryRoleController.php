@@ -5,8 +5,20 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCategoryRoleRequest;
 use App\Http\Requests\UpdateCategoryRoleRequest;
 use App\Models\CategoryRole;
-use Illuminate\Support\Facades\DB;
 
+/**
+ * @OA\Info(
+ *     title="My First API Documentation",
+ *     version="0.1",
+ *      @OA\Contact(
+ *          email="binhnguyen.balebom@gmail.com"
+ *      ),
+ * ),
+ *  @OA\Server(
+ *      description="Learning env",
+ *      url="https://foo.localhost:8000/api/"
+ *  ),
+ */
 class CategoryRoleController extends Controller
 {
     /**
@@ -14,11 +26,31 @@ class CategoryRoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    
+    /**
+     * @OA\Get(
+     *      path="/api/role",
+     *      operationId="index",
+     *      tags={"Clients"},
+     *      summary="Get list of category roles",
+     *      description="Returns list of category roles",
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation"
+     *       )
+     *     )
+     *
+     * Returns list of category roles
+     */
     public function index()
     {
         //
         return response()->json(
-            DB::table('category_roles')->paginate(15),
+            [
+                'error_code' => 200,
+                'msg' => 'Successfully',
+                'payload' => CategoryRole::paginate(15),
+            ]
         );
     }
 
@@ -41,21 +73,24 @@ class CategoryRoleController extends Controller
     public function store(StoreCategoryRoleRequest $request)
     {
         //
-        if (!$request->user()->is_admin) {
-            return abort(403);
-        }
+        $request->validate([
+            'code' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
+        ]);
 
-        CategoryRole::create($request->all());
-
-        $categoryRole = new CategoryRole();
-        $categoryRole->fill($request->all());
-
-        $categoryRole->created_by_id = $request->user()->id;
-        $categoryRole->updated_by_id = $request->user()->id;
-
+        $categoryRole = new CategoryRole($request->all());
+        $categoryRole->is_system_role = false;
         $categoryRole->save();
 
-        return response()->json();
+        return response()->json(
+            [
+                'error_code' => 200,
+                'msg' => 'Successfully',
+                'payload' => [
+                    'insertedId' => $categoryRole->id,
+                ]
+            ]
+        );
     }
 
     /**
@@ -87,21 +122,28 @@ class CategoryRoleController extends Controller
      * @param  \App\Models\CategoryRole  $categoryRole
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateCategoryRoleRequest $request, CategoryRole $categoryRole)
+    public function update(UpdateCategoryRoleRequest $request, $id)
     {
         //
-        if (!$request->user()->is_admin) {
-            return abort(403);
-        }
+        $request->validate([
+            'code' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
+        ]);
 
         $categoryRole = new CategoryRole();
         $categoryRole->fill($request->all());
 
-        $categoryRole->updated_by_id = $request->user()->id;
+        $affected = CategoryRole::where('id', $id)->where('is_system_role', false)->update($categoryRole->toArray());
 
-        CategoryRole::whereIs($request->id)->update($categoryRole->all());
-
-        return response()->json();
+        return response()->json(
+            [
+                'error_code' => 200,
+                'msg' => 'Successfully',
+                'payload' => [
+                    'updatedCount' => $affected,
+                ]
+            ]
+        );
     }
 
     /**
@@ -110,8 +152,39 @@ class CategoryRoleController extends Controller
      * @param  \App\Models\CategoryRole  $categoryRole
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CategoryRole $categoryRole)
+    public function destroy($id)
     {
         //
+        $existCategoryRole = CategoryRole::find($id);
+        if (!$existCategoryRole) {
+            return response()->json(
+                [
+                    'error_code' => 400,
+                    'msg' => 'Invalid category role id id provided',
+                    'payload' => null,
+                ]
+            );
+        }
+
+        if ($existCategoryRole->is_system_role) {
+            return response()->json(
+                [
+                    'error_code' => 400,
+                    'msg' => 'Could not delete system data',
+                    'payload' => null,
+                ]
+            );
+        }
+
+        $existCategoryRole->delete();
+        return response()->json(
+            [
+                'error_code' => 200,
+                'msg' => 'Successfully',
+                'payload' => [
+                    'deletedId' => $existCategoryRole->id,
+                ]
+            ]
+        );
     }
 }

@@ -2,24 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreProducerRequest;
-use App\Http\Requests\UpdateProducerRequest;
-use App\Models\Producer;
+use App\Http\Requests\StoreRoleRequest;
+use App\Http\Requests\UpdateRoleRequest;
+use App\Models\CategoryRole;
+use App\Models\Role;
 
-class ProducerController extends Controller
+class RoleController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($user_id)
     {
         //
         return [
             'error_code' => 200,
             'msg' => 'Successfully',
-            'payload' => Producer::paginate(15),
+            'payload' => Role::where('user_id', $user_id)->paginate(15),
         ];
     }
 
@@ -36,30 +37,28 @@ class ProducerController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreProducerRequest  $request
+     * @param  \App\Http\Requests\StoreRoleRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreProducerRequest $request)
+    public function store(StoreRoleRequest $request)
     {
         //
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'category_nation_id' => ['required', 'string', 'max:255'],
+            'user_id' => ['required', 'integer'],
+            'category_role_id' => ['required', 'integer'],
         ]);
 
-        $producer = new Producer();
-        $producer->fill($request->all());
-        $producer->created_by_id = $request->user()->id;
-        $producer->updated_by_id = $request->user()->id;
-        $producer->save();
+        $role = new Role();
+        $role->fill($request->all());
+        $role->save();
 
         return response()->json(
             [
                 'error_code' => 200,
                 'msg' => 'Successfully',
                 'payload' => [
-                    'insertedId' => $producer->id,
-                ]
+                    'insertedId' => $role->id,
+                ],
             ]
         );
     }
@@ -67,10 +66,10 @@ class ProducerController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Producer  $producer
+     * @param  \App\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function show(Producer $producer)
+    public function show(Role $role)
     {
         //
     }
@@ -78,10 +77,10 @@ class ProducerController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Producer  $producer
+     * @param  \App\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function edit(Producer $producer)
+    public function edit(Role $role)
     {
         //
     }
@@ -89,30 +88,29 @@ class ProducerController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateProducerRequest  $request
-     * @param  \App\Models\Producer  $producer
+     * @param  \App\Http\Requests\UpdateRoleRequest  $request
+     * @param  \App\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateProducerRequest $request, $id)
+    public function update(UpdateRoleRequest $request, $id)
     {
         //
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'category_nation_id' => ['required', 'string', 'max:255'],
+            'user_id' => ['required', 'integer'],
+            'category_role_id' => ['required', 'integer'],
         ]);
 
-        $producer = new Producer();
-        $producer->fill($request->all());
-        $producer->updated_by_id = $request->user()->id;
-        
-        $affected = Producer::where('id', $id)->update($producer->toArray());
+        $role = new Role();
+        $role->fill($request->all());
+
+        $affected = Role::where('id', $id)->update($role->toArray());
 
         return response()->json(
             [
                 'error_code' => 200,
                 'msg' => 'Successfully',
                 'payload' => [
-                    'affectedRows' => $affected,
+                    'updatedCouunt' => $affected,
                 ]
             ]
         );
@@ -121,14 +119,14 @@ class ProducerController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Producer  $producer
+     * @param  \App\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         //
-        $existProducer = Producer::find($id);
-        if (!$existProducer) {
+        $existRole = Role::find($id);
+        if (!$existRole) {
             return response()->json(
                 [
                     'error_code' => 400,
@@ -138,7 +136,7 @@ class ProducerController extends Controller
             );
         }
 
-        $affected = $existProducer->delete();
+        $affected = $existRole->delete();
         return response()->json(
             [
                 'error_code' => 200,
@@ -148,6 +146,5 @@ class ProducerController extends Controller
                 ]
             ]
         );
-
     }
 }

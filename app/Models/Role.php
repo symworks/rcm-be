@@ -7,12 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class CategoryNation extends Model
+class Role extends Model
 {
     use HasFactory, Notifiable, HasApiTokens;
 
     protected $fillable = [
-        'name',
+        'user_id',
+        'category_role_id',
     ];
 
     protected $hidden = [
@@ -22,4 +23,12 @@ class CategoryNation extends Model
     protected $casts = [
 
     ];
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
+
+    public function categoryRole() {
+        return $this->belongsTo(CategoryRole::class);
+    }
 }

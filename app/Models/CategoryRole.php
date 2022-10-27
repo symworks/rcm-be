@@ -16,11 +16,19 @@ class CategoryRole extends Model
         'name',
     ];
 
+    protected $attributes = [
+
+    ];
+
     protected $hidden = [
-        'is_system_role',
+
     ];
 
     protected $casts = [
 
     ];
+
+    public function roles() {
+        return $this->hasMany(Role::class);
+    }
 }

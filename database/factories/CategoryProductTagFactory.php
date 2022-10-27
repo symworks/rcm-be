@@ -2,13 +2,12 @@
 
 namespace Database\Factories;
 
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\CategoryRole>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\CategoryProductTag>
  */
-class CategoryRoleFactory extends Factory
+class CategoryProductTagFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -19,9 +18,6 @@ class CategoryRoleFactory extends Factory
     {
         return [
             //
-            'code' => Str::Random(10),
-            'name' => fake()->name(),
-            'is_system_role' => fake()->boolean(),
         ];
     }
 }

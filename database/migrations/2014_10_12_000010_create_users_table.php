@@ -21,10 +21,6 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
-
-            $table->unsignedBigInteger('category_role_id');
-
-            $table->foreign('category_role_id')->references('id')->on('category_roles')->onDelete('cascade');
         });
     }
 
