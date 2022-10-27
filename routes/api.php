@@ -13,12 +13,15 @@ use App\Http\Controllers\CategoryVnDistrictController;
 use App\Http\Controllers\CategoryVnProvinceController;
 use App\Http\Controllers\CategoryVnRegionsController;
 use App\Http\Controllers\CategoryVnWardController;
+use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PriceRangeController;
 use App\Http\Controllers\ProductBrandController;
-use App\Http\Controllers\ProductColorController;
 use App\Http\Controllers\ProductColorQtyController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductEvaluateController;
+use App\Http\Controllers\ProductImageController;
+use App\Http\Controllers\ProductOrderController;
+use App\Http\Controllers\ProductOrderDetailController;
 use App\Http\Controllers\ProductTagController;
 use App\Http\Controllers\ProductTypeController;
 use App\Http\Controllers\ProductVersionController;
@@ -85,12 +88,6 @@ Route::get('/ui/rcm/product_list/{product_type_id}', [UiController::class, 'rcm_
 // Product
 Route::get('/product', [ProductController::class, 'index']);
 
-Route::get('/product/no_paginate', [ProductController::class, 'indexNoPaginate']);
-
-Route::get('/product/product_id/{id}', [ProductController::class, 'productById']);
-
-Route::get('/product/product_type_id/{product_type_id}', [ProductController::class, 'productByProductTypeId']);
-
 Route::get('/product_type', [ProductTypeController::class, 'index']);
 
 Route::get('/product_brand/product_id/{product_id}', [ProductBrandController::class, 'indexByProductId']);
@@ -104,13 +101,13 @@ Route::get('/ads_campaign', [AdsCampaignController::class, 'index']);
 // Product version
 Route::get('/product_version', [ProductVersionController::class, 'index']);
 
-// Product color
-Route::get('/product_color', [ProductColorController::class, 'index']);
+// Product image
+Route::get('/product_image', [ProductImageController::class, 'index']);
+
+Route::get('/product_image/thumbnail', [ProductImageController::class, 'indexForThumbnail']);
 
 // Product color qty
 Route::get('/product_color_qty', [ProductColorQtyController::class, 'index']);
-
-Route::get('/product_color_qty/with_name', [ProductColorQtyController::class, 'indexWithColorName']);
 
 // Product evaluate
 Route::get('/product_evaluate', [ProductEvaluateController::class, 'index']);
@@ -139,6 +136,18 @@ Route::get('/store/select', [StoreController::class, 'indexNoPaginate']);
 
 // Category Vn Ward
 Route::get('/category_vn_ward', [CategoryVnWardController::class, 'index']);
+
+// Product Order
+Route::get('/product_order', [ProductOrderController::class, 'index']);
+
+Route::post('/product_order', [ProductOrderController::class, 'store']);
+
+Route::patch('/product_order/select_method', [ProductOrderController::class, 'selectMethod']);
+
+// Product Order Detail
+Route::post('/product_order_detail', [ProductOrderDetailController::class, 'store']);
+
+Route::get('/payment_method', [PaymentMethodController::class, 'index']);
 
 Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::get('/category_role', [CategoryRoleController::class, 'index']);

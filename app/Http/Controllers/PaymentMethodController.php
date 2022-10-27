@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreProductColorRequest;
-use App\Http\Requests\UpdateProductColorRequest;
-use App\Models\ProductColor;
+use App\Http\Requests\StorePaymentMethodRequest;
+use App\Http\Requests\UpdatePaymentMethodRequest;
+use App\Models\PaymentMethod;
 use Illuminate\Http\Request;
 
-class ProductColorController extends Controller
+class PaymentMethodController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,19 +19,22 @@ class ProductColorController extends Controller
         //
         $perPage = 15;
         if ($request->has('per_page')) {
-            $perPage = $request->per_page;
+            $perPage = $request->get('per_page');
         }
 
-        $queryBuilder = ProductColor::select('*');
+        $result = [];
+        $queryBuilder = PaymentMethod::select('*');
 
-        if ($request->has('product_id')) {
-            $queryBuilder = $queryBuilder->where('product_id', $request->product_id);           
+        if (!$request->has('use_paginate') || $request->use_paginate === 'true') {
+            $result = $queryBuilder->paginate($perPage);
+        } else {
+            $result = $queryBuilder->get();
         }
 
         return [
             'error_code' => 200,
             'msg' => 'Successfully',
-            'payload' => $queryBuilder->paginate($perPage),
+            'payload' => $result,
         ];
     }
 
@@ -48,10 +51,10 @@ class ProductColorController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreProductColorRequest  $request
+     * @param  \App\Http\Requests\StorePaymentMethodRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreProductColorRequest $request)
+    public function store(StorePaymentMethodRequest $request)
     {
         //
     }
@@ -59,10 +62,10 @@ class ProductColorController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\ProductColor  $productColor
+     * @param  \App\Models\PaymentMethod  $paymentMethod
      * @return \Illuminate\Http\Response
      */
-    public function show(ProductColor $productColor)
+    public function show(PaymentMethod $paymentMethod)
     {
         //
     }
@@ -70,10 +73,10 @@ class ProductColorController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\ProductColor  $productColor
+     * @param  \App\Models\PaymentMethod  $paymentMethod
      * @return \Illuminate\Http\Response
      */
-    public function edit(ProductColor $productColor)
+    public function edit(PaymentMethod $paymentMethod)
     {
         //
     }
@@ -81,11 +84,11 @@ class ProductColorController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateProductColorRequest  $request
-     * @param  \App\Models\ProductColor  $productColor
+     * @param  \App\Http\Requests\UpdatePaymentMethodRequest  $request
+     * @param  \App\Models\PaymentMethod  $paymentMethod
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateProductColorRequest $request, ProductColor $productColor)
+    public function update(UpdatePaymentMethodRequest $request, PaymentMethod $paymentMethod)
     {
         //
     }
@@ -93,10 +96,10 @@ class ProductColorController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\ProductColor  $productColor
+     * @param  \App\Models\PaymentMethod  $paymentMethod
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ProductColor $productColor)
+    public function destroy(PaymentMethod $paymentMethod)
     {
         //
     }

@@ -6,6 +6,7 @@ use App\Http\Requests\StoreProductVersionRequest;
 use App\Http\Requests\UpdateProductVersionRequest;
 use App\Models\ProductVersion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductVersionController extends Controller
 {
@@ -22,10 +23,28 @@ class ProductVersionController extends Controller
             $perPage = $request->per_page;
         }
 
-        $productVersions = ProductVersion::select('*');
+        $queryBuilder = DB::table('product_versions')
+        ->join('product_images', 'product_versions.product_image_id', 'product_images.id')
+        ->join('products', 'products.id', 'product_versions.product_id')
+        ->select('product_versions.*', 'product_images.image_url', 'products.average_evaluation', 'products.product_type_id', 'products.product_info');
+
+        if ($request->has('id')) {
+            $queryBuilder = $queryBuilder->where('product_versions.id', $request->id);
+        }
+
+        if ($request->has('product_version_ids')) {
+            $productVersionIds = $request->product_version_ids;
+            for ($i = 0; $i < count($productVersionIds); $i++) {
+                $queryBuilder = $queryBuilder->orWhere('product_versions.id', $productVersionIds[$i]);
+            }
+        }
 
         if ($request->has('product_id')) {
-            $productVersions = $productVersions->where('product_id', $request->product_id);
+            $queryBuilder = $queryBuilder->where('product_versions.product_id', $request->product_id);
+        }
+
+        if ($request->has('product_type_id')) {
+            $queryBuilder = $queryBuilder->where('products.product_type_id', $request->product_type_id);
         }
 
         // qty_critical
@@ -37,20 +56,27 @@ class ProductVersionController extends Controller
         if ($request->has('critical')) {
             switch ($request->qty_critical) {
             case 'instock':
-                $productVersions = $productVersions->where('instock_qty', '>', 0);
+                $queryBuilder = $queryBuilder->where('instock_qty', '>', 0);
             case 'sold':
-                $productVersions = $productVersions->where('instock_qty', '>', 0);
+                $queryBuilder = $queryBuilder->where('instock_qty', '>', 0);
             case 'busy':
-                $productVersions = $productVersions->where('busy_qty', '>', 0);
+                $queryBuilder = $queryBuilder->where('busy_qty', '>', 0);
             default:
                 // Do nothing
             }
         }
 
+        $result = [];
+        if (!$request->has('use_paginate') || $request->use_paginate === 'true') {
+            $result = $queryBuilder->paginate($perPage);
+        } else {
+            $result = $queryBuilder->get();
+        }
+
         return [
             'error_code' => 200,
             'msg' => 'Successfully',
-            'payload' => $productVersions->paginate($perPage),
+            'payload' => $result,
         ];
     }
 

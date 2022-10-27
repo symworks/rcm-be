@@ -15,21 +15,11 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
             $table->longText('top_features');
             $table->longText('description');
             $table->longText('product_info');
-            $table->boolean('is_discount');
-            $table->boolean('is_trending');
-            $table->float('origin_price');
-            $table->float('official_price');
             $table->float('average_evaluation');
             $table->integer('total_evaluation');
-            $table->string('image_1');
-            $table->string('image_2');
-            $table->string('image_3');
-            $table->string('image_4');
-            $table->string('image_5');
             $table->timestamps();
 
             $table->unsignedBigInteger('product_type_id')->nullable();

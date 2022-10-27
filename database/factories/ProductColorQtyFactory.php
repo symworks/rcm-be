@@ -18,15 +18,14 @@ class ProductColorQtyFactory extends Factory
      */
     public function definition()
     {
-        $productVersionIds = ProductVersion::where('product_id', 1)->pluck('id')->toArray();
-        $productColorIds = ProductColor::where('product_id', 1)->pluck('id')->toArray();
+        $productVersionIds = ProductVersion::pluck('id')->toArray();
         return [
             //
+            'name' => fake()->name(),
             'instock_qty' => fake()->numberBetween(0, 500),
             'sold_qty' => fake()->numberBetween(0, 500),
             'busy_qty' => fake()->numberBetween(0, 500),
             'product_version_id' => fake()->randomElement($productVersionIds),
-            'product_color_id' => fake()->randomElement($productColorIds),
         ];
     }
 }

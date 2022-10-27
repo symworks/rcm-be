@@ -29,32 +29,17 @@ class ProductColorQtyController extends Controller
             $queryBuilder = $queryBuilder->where('product_version_id', $request->product_version_id);
         }
 
-        return [
-            'error_code' => 200,
-            'msg' => 'Successfully',
-            'payload' => $queryBuilder->paginate($perPage),
-        ];
-    }
-
-    public function indexWithColorName(Request $request)
-    {
-        //
-        $perPage = 15;
-        if ($request->has('per_page')) {
-            $perPage = $request->per_page;
-        }
-
-        $queryBuilder = DB::table('product_color_qties')
-            ->join('product_colors', 'product_color_qties.product_color_id', '=', 'product_colors.id');
-
-        if ($request->has('product_version_id')) {
-            $queryBuilder = $queryBuilder->where('product_color_qties.product_version_id', $request->product_version_id);
+        $result = [];
+        if (!$request->has('use_paginate') || $request->use_paginate === 'true') {
+            $result = $queryBuilder->paginate($perPage);
+        } else {
+            $result = $queryBuilder->get();
         }
 
         return [
             'error_code' => 200,
             'msg' => 'Successfully',
-            'payload' => $queryBuilder->paginate($perPage),
+            'payload' => $result,
         ];
     }
 

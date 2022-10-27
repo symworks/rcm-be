@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\ProductColorQty;
+use App\Models\ProductImage;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class ProductColorQtySeeder extends Seeder
+class ProductImageSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,6 +16,6 @@ class ProductColorQtySeeder extends Seeder
     public function run()
     {
         //
-        ProductColorQty::factory()->count(1000)->create();
+        ProductImage::factory()->count(2000)->create();
     }
 }

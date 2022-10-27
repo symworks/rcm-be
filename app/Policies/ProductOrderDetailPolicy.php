@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\ProductColor;
+use App\Models\ProductOrderDetail;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class ProductColorPolicy
+class ProductOrderDetailPolicy
 {
     use HandlesAuthorization;
 
@@ -25,10 +25,10 @@ class ProductColorPolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\ProductColor  $productColor
+     * @param  \App\Models\ProductOrderDetail  $productOrderDetail
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, ProductColor $productColor)
+    public function view(User $user, ProductOrderDetail $productOrderDetail)
     {
         //
     }
@@ -48,10 +48,10 @@ class ProductColorPolicy
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\ProductColor  $productColor
+     * @param  \App\Models\ProductOrderDetail  $productOrderDetail
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, ProductColor $productColor)
+    public function update(User $user, ProductOrderDetail $productOrderDetail)
     {
         //
     }
@@ -60,10 +60,10 @@ class ProductColorPolicy
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\ProductColor  $productColor
+     * @param  \App\Models\ProductOrderDetail  $productOrderDetail
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, ProductColor $productColor)
+    public function delete(User $user, ProductOrderDetail $productOrderDetail)
     {
         //
     }
@@ -72,10 +72,10 @@ class ProductColorPolicy
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\ProductColor  $productColor
+     * @param  \App\Models\ProductOrderDetail  $productOrderDetail
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, ProductColor $productColor)
+    public function restore(User $user, ProductOrderDetail $productOrderDetail)
     {
         //
     }
@@ -84,10 +84,10 @@ class ProductColorPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\ProductColor  $productColor
+     * @param  \App\Models\ProductOrderDetail  $productOrderDetail
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, ProductColor $productColor)
+    public function forceDelete(User $user, ProductOrderDetail $productOrderDetail)
     {
         //
     }

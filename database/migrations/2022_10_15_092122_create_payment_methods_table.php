@@ -13,24 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('product_versions', function (Blueprint $table) {
+        Schema::create('payment_methods', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->float('official_price');
-            $table->float('origin_price');
-
-            $table->unsignedInteger('instock_qty');
-            $table->unsignedInteger('sold_qty');
-            $table->unsignedInteger('busy_qty');
+            $table->string('name');
+            $table->string('logo');
+            $table->string('description');
             $table->timestamps();
 
-            $table->unsignedBigInteger('product_id')->nullable();
-            $table->unsignedBigInteger('product_image_id')->nullable();
             $table->unsignedBigInteger('created_by_id')->nullable();
             $table->unsignedBigInteger('updated_by_id')->nullable();
 
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-            $table->foreign('product_image_id')->references('id')->on('product_images')->onDelete('cascade');
             $table->foreign('created_by_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('updated_by_id')->references('id')->on('users')->onDelete('cascade');
         });
@@ -43,6 +35,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product_versions');
+        Schema::dropIfExists('payment_methods');
     }
 };
