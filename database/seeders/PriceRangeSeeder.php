@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\PriceRange;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,5 +16,6 @@ class PriceRangeSeeder extends Seeder
     public function run()
     {
         //
+        PriceRange::factory()->count(50)->create();
     }
 }

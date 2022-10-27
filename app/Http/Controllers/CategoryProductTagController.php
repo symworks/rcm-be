@@ -16,6 +16,11 @@ class CategoryProductTagController extends Controller
     public function index()
     {
         //
+        return [
+            'error_code' => 200,
+            'msg' => 'Successfully',
+            'payload' => CategoryProductTag::paginate(15),
+        ];
     }
 
     /**
@@ -37,6 +42,26 @@ class CategoryProductTagController extends Controller
     public function store(StoreCategoryProductTagRequest $request)
     {
         //
+        $request->validate(
+            [
+                'code' => ['required','string','max:255'],
+                'name' => ['required','string','max:255'],
+            ]
+        );
+
+        $categoryProductTag = new CategoryProductTag();
+        $categoryProductTag->fill($request->all());
+        $categoryProductTag->save();
+
+        return response()->json(
+            [
+                'error_code' => 200,
+                'msg' => 'Successfully',
+                'payload' => [
+                    'insertedId' => $categoryProductTag->id,
+                ]
+            ]
+        );
     }
 
     /**
@@ -68,9 +93,30 @@ class CategoryProductTagController extends Controller
      * @param  \App\Models\CategoryProductTag  $categoryProductTag
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateCategoryProductTagRequest $request, CategoryProductTag $categoryProductTag)
+    public function update(UpdateCategoryProductTagRequest $request, $id)
     {
         //
+        $request->validate(
+            [
+                'code' => ['required','string','max:255'],
+                'name' => ['required','string','max:255'],
+            ]
+        );
+
+        $categoryProductTag = new CategoryProductTag();
+        $categoryProductTag->fill($request->all());
+
+        $affected = CategoryProductTag::where('id', $id)->update($categoryProductTag->totallyGuarded());
+
+        return response()->json(
+            [
+                'error_code' => 200,
+                'msg' => 'Successfully',
+                'payload' => [
+                    'updatedCount' => $affected
+                ]
+            ]
+        );
     }
 
     /**
@@ -79,8 +125,29 @@ class CategoryProductTagController extends Controller
      * @param  \App\Models\CategoryProductTag  $categoryProductTag
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CategoryProductTag $categoryProductTag)
+    public function destroy($id)
     {
         //
+        $categoryProductTag = CategoryProductTag::find($id);
+        if (!$categoryProductTag) {
+            return response()->json(
+                [
+                    'error_code' => 400,
+                    'msg' => 'Invalid Category Product Tag ID',
+                    'payload' => null,
+                ]
+            );
+        }
+
+        $affected = $categoryProductTag->delete();
+        return response()->json(
+            [
+                'error_code' => 200,
+                'msg' => 'Successfully',
+                'payload' => [
+                    'deletedId' => $affected,
+                ]
+            ]
+        );
     }
 }

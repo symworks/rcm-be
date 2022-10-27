@@ -13,9 +13,14 @@ class ProductTagController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($product_id)
     {
         //
+        return [
+            'error_code' => 200,
+            'msg' => 'Successfully',
+            'payload' => ProductTag::where('product_id', $product_id)::paginate(15),
+        ];
     }
 
     /**
@@ -37,6 +42,26 @@ class ProductTagController extends Controller
     public function store(StoreProductTagRequest $request)
     {
         //
+        $request->validate(
+            [
+                'product_id' => ['required', 'integer'],
+                'category_product_tag_id' => ['required', 'integer'],
+            ]
+        );
+
+        $productTag = new ProductTag();
+        $productTag->fill($request->all());
+        $productTag->save();
+
+        return response()->json(
+            [
+                'error_code' => 200,
+                'msg' => 'Successfully',
+                'payload' => [
+                    'insertedId' => $productTag->id
+                ] 
+            ]
+        );
     }
 
     /**
@@ -68,9 +93,30 @@ class ProductTagController extends Controller
      * @param  \App\Models\ProductTag  $productTag
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateProductTagRequest $request, ProductTag $productTag)
+    public function update(UpdateProductTagRequest $request, $id)
     {
         //
+        $request->validate(
+            [
+                'product_id' => ['required', 'integer'],
+                'category_product_tag_id' => ['required', 'integer'],
+            ]
+        );
+
+        $productTag = new ProductTag();
+        $productTag->fill($request->all());
+        
+        $affected = ProductTag::where('id', $id)->update($productTag->toArray());
+
+        return response()->json(
+            [
+                'error_code' => 200,
+                'msg' => 'Successfully',
+                'payload' => [
+                    'updatedCount' => $affected,
+                ]
+            ]
+        );
     }
 
     /**
@@ -79,8 +125,30 @@ class ProductTagController extends Controller
      * @param  \App\Models\ProductTag  $productTag
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ProductTag $productTag)
+    public function destroy($id)
     {
         //
+        $productTag = ProductTag::find($id);
+
+        if (!$productTag) {
+            return response()->json(
+                [
+                    'error_code' => 400,
+                    'msg' => 'Product tag not found',
+                ]
+            );
+        }
+
+        $affected = $productTag->delete();
+        return response()->json(
+            [
+                'error_code' => 200,
+                'msg' => 'Successfully',
+                'payload' => [
+                    'deletedId' =>$affected
+                ]
+            ]
+        );
+
     }
 }

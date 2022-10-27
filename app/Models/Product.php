@@ -12,7 +12,7 @@ class Product extends Model
     use HasFactory, Notifiable, HasApiTokens;
 
     protected $fillable = [
-        'title',
+        'name',
         'top_features',
         'description',
         'is_discount',
@@ -21,6 +21,9 @@ class Product extends Model
         'official_price',
         'average_evaluation',
         'total_evaluation',
+        'instock_qty',
+        'handling_qty',
+        'sold_qty',
         'image_1',
         'image_2',
         'image_3',
@@ -28,8 +31,9 @@ class Product extends Model
         'image_5',
 
         'producer_id',
-        'product_brand_id',
         'category_currency_id',
+        'category_product_id',
+        'category_product_type_id',
     ];
 
     protected $hidden = [
@@ -39,9 +43,5 @@ class Product extends Model
     protected $casts = [
         'is_discount' => 'boolean',
         'is_trending' => 'boolean',
-
-        'product_id' => 'integer',
-        'product_brand_id' => 'integer',
-        'category_currency_id' => 'integer',
     ];
 }

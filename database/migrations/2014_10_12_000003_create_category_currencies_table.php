@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('category_currencies', function (Blueprint $table) {
             $table->id();
             $table->string('code')->unique();
-            $table->string('name')->unique();
+            $table->string('name');
             $table->timestamps();
 
             $table->unsignedBigInteger('category_nation_id');

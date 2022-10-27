@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\ProductBrand;
+use App\Models\CategoryProductBrand;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class ProductBrandPolicy
+class CategoryProductBrandPolicy
 {
     use HandlesAuthorization;
 
@@ -25,10 +25,10 @@ class ProductBrandPolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\ProductBrand  $productBrand
+     * @param  \App\Models\CategoryProductBrand  $productBrand
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, ProductBrand $productBrand)
+    public function view(User $user, CategoryProductBrand $productBrand)
     {
         //
     }
@@ -48,10 +48,10 @@ class ProductBrandPolicy
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\ProductBrand  $productBrand
+     * @param  \App\Models\CategoryProductBrand  $productBrand
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, ProductBrand $productBrand)
+    public function update(User $user, CategoryProductBrand $productBrand)
     {
         //
     }
@@ -60,10 +60,10 @@ class ProductBrandPolicy
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\ProductBrand  $productBrand
+     * @param  \App\Models\CategoryProductBrand  $productBrand
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, ProductBrand $productBrand)
+    public function delete(User $user, CategoryProductBrand $productBrand)
     {
         //
     }
@@ -72,10 +72,10 @@ class ProductBrandPolicy
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\ProductBrand  $productBrand
+     * @param  \App\Models\CategoryProductBrand  $productBrand
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, ProductBrand $productBrand)
+    public function restore(User $user, CategoryProductBrand $productBrand)
     {
         //
     }
@@ -84,10 +84,10 @@ class ProductBrandPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\ProductBrand  $productBrand
+     * @param  \App\Models\CategoryProductBrand  $productBrand
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, ProductBrand $productBrand)
+    public function forceDelete(User $user, CategoryProductBrand $productBrand)
     {
         //
     }

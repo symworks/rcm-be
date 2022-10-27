@@ -19,8 +19,8 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unsignedBigInteger('category_nation_id');
-            $table->unsignedBigInteger('created_by_id');
-            $table->unsignedBigInteger('updated_by_id');
+            $table->unsignedBigInteger('created_by_id')->nullable();
+            $table->unsignedBigInteger('updated_by_id')->nullable();
 
             $table->foreign('category_nation_id')->references('id')->on('category_nations')->onDelete('cascade');
             $table->foreign('created_by_id')->references('id')->on('users')->onDelete('cascade');

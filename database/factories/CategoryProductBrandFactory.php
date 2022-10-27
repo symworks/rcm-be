@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\CategoryNation;
+use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Producer>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\CategoryProductBrand>
  */
-class ProducerFactory extends Factory
+class CategoryProductBrandFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,12 +17,11 @@ class ProducerFactory extends Factory
      */
     public function definition()
     {
-        $categoryNations = CategoryNation::pluck('id')->toArray();
         return [
             //
             'name' => fake()->name(),
-
-            'category_nation_id' => fake()->randomElement($categoryNations),
+            'logo' => fake()->name(),
+            'product_id' => fake()->numberBetween(1, 5),
         ];
     }
 }

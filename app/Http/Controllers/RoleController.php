@@ -110,7 +110,7 @@ class RoleController extends Controller
                 'error_code' => 200,
                 'msg' => 'Successfully',
                 'payload' => [
-                    'updatedCouunt' => $affected,
+                    'updatedCount' => $affected,
                 ]
             ]
         );

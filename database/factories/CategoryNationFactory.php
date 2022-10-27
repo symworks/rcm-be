@@ -18,6 +18,7 @@ class CategoryNationFactory extends Factory
     {
         return [
             //
+            'name' => fake()->country(),
         ];
     }
 }

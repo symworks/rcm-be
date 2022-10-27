@@ -16,6 +16,13 @@ class CategoryProductTypeController extends Controller
     public function index()
     {
         //
+        return response()->json(
+            [
+                'error_code' => 200,
+                'msg' => 'Successfully',
+                'payload' => CategoryProductType::paginate(15),
+            ]
+        );
     }
 
     /**
@@ -37,15 +44,35 @@ class CategoryProductTypeController extends Controller
     public function store(StoreCategoryProductTypeRequest $request)
     {
         //
+        $request->validate(
+            [
+                'code' => ['required', 'string', 'max:255'],
+                'name' => ['required', 'string', 'max:255'],
+            ]
+        );
+
+        $CategoryProductType = new CategoryProductType();
+        $CategoryProductType->fill($request->all());
+        $CategoryProductType->save();
+
+        return response()->json(
+            [
+                'error_code' => 200,
+                'msg' => 'Successfully',
+                'payload' => [
+                    'insertedId' => $CategoryProductType->id,
+                ]
+            ]
+        );
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\CategoryProductType  $categoryProductType
+     * @param  \App\Models\CategoryProductType  $CategoryProductType
      * @return \Illuminate\Http\Response
      */
-    public function show(CategoryProductType $categoryProductType)
+    public function show(CategoryProductType $CategoryProductType)
     {
         //
     }
@@ -53,10 +80,10 @@ class CategoryProductTypeController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\CategoryProductType  $categoryProductType
+     * @param  \App\Models\CategoryProductType  $CategoryProductType
      * @return \Illuminate\Http\Response
      */
-    public function edit(CategoryProductType $categoryProductType)
+    public function edit(CategoryProductType $CategoryProductType)
     {
         //
     }
@@ -65,22 +92,64 @@ class CategoryProductTypeController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\UpdateCategoryProductTypeRequest  $request
-     * @param  \App\Models\CategoryProductType  $categoryProductType
+     * @param  \App\Models\CategoryProductType  $CategoryProductType
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateCategoryProductTypeRequest $request, CategoryProductType $categoryProductType)
+    public function update(UpdateCategoryProductTypeRequest $request, $id)
     {
         //
+        $request->validate(
+            [
+                'code' => ['required', 'string', 'max:255'],
+                'name' => ['required', 'string', 'max:255'],
+            ]
+        );
+
+        $CategoryProductType = new CategoryProductType();
+        $CategoryProductType->fill($request->all());
+
+        $affected = CategoryProductType::where('id', $id)->update($CategoryProductType->toArray());
+
+        return response()->json(
+            [
+                'error_code' => 200,
+                'msg' => 'Successfully',
+                'payload' => [
+                    'updatedCount' => $affected,
+                ]
+            ]
+        );
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\CategoryProductType  $categoryProductType
+     * @param  \App\Models\CategoryProductType  $CategoryProductType
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CategoryProductType $categoryProductType)
+    public function destroy($id)
     {
         //
+        $existCategoryProductType = CategoryProductType::find($id);
+        if (!$existCategoryProductType) {
+            return response()->json(
+                [
+                    'error_code' => 400,
+                    'msg' => 'Invalid category product type ID',
+                    'payload' => null,
+                ]
+            );
+        }
+
+        $affected = $existCategoryProductType->delete();
+        return response()->json(
+            [
+                'error_code' => 200,
+                'msg' => 'Succefully',
+                'payload' => [
+                    'deletedId' => $affected,
+                ]
+            ]
+        );
     }
 }

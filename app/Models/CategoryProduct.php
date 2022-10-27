@@ -7,14 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class PriceRange extends Model
+class CategoryProduct extends Model
 {
     use HasFactory, Notifiable, HasApiTokens;
 
     protected $fillable = [
-        'min_price',
-        'max_price',
-        'product_id',
+        'name',
+        'is_active',
+        'ui_icon',
     ];
 
     protected $hidden = [

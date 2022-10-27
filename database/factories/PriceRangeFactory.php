@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,8 +17,12 @@ class PriceRangeFactory extends Factory
      */
     public function definition()
     {
+        $products = Product::pluck('id')->toArray();
         return [
             //
+            'min_price' => fake()->randomFloat(2, 0, 200000),
+            'max_price' => fake()->randomFloat(2, 0, 200000),
+            'product_id' => fake()->randomElement($products),
         ];
     }
 }

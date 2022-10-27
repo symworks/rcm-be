@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->unique();
+            $table->string('name')->unique();
             $table->string('top_features');
             $table->string('description');
             $table->boolean('is_discount');
@@ -31,14 +31,14 @@ return new class extends Migration
             $table->string('image_5');
             $table->timestamps();
 
-            $table->unsignedBigInteger('producer_id');
-            $table->unsignedBigInteger('product_brand_id');
-            $table->unsignedBigInteger('category_currency_id');
-            $table->unsignedBigInteger('created_by_id');
-            $table->unsignedBigInteger('updated_by_id');
+            $table->unsignedBigInteger('producer_id')->nullable();
+            $table->unsignedBigInteger('category_currency_id')->nullable();
+            $table->unsignedBigInteger('category_product_id')->nullable();
+            $table->unsignedBigInteger('category_product_type_id')->nullable();
+            $table->unsignedBigInteger('created_by_id')->nullable();
+            $table->unsignedBigInteger('updated_by_id')->nullable();
 
             $table->foreign('producer_id')->references('id')->on('producers')->onDelete('cascade');
-            $table->foreign('product_brand_id')->references('id')->on('product_brands')->onDelete('cascade');
             $table->foreign('category_currency_id')->references('id')->on('category_currencies')->onDelete('cascade');
             $table->foreign('created_by_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('updated_by_id')->references('id')->on('users')->onDelete('cascade');
