@@ -13,16 +13,20 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('product_types', function (Blueprint $table) {
+        Schema::create('product_color_qties', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->string('ui_icon');
-            $table->boolean('is_active');
+            $table->unsignedInteger('instock_qty');
+            $table->unsignedInteger('sold_qty');
+            $table->unsignedInteger('busy_qty');
             $table->timestamps();
 
+            $table->unsignedBigInteger('product_version_id')->nullable();
+            $table->unsignedBigInteger('product_color_id')->nullable();
             $table->unsignedBigInteger('created_by_id')->nullable();
             $table->unsignedBigInteger('updated_by_id')->nullable();
 
+            $table->foreign('product_version_id')->references('id')->on('product_versions')->onDelete('cascade');
+            $table->foreign('product_color_id')->references('id')->on('product_colors')->onDelete('cascade');
             $table->foreign('created_by_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('updated_by_id')->references('id')->on('users')->onDelete('cascade');
         });
@@ -35,6 +39,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product_types');
+        Schema::dropIfExists('product_color_qties');
     }
 };

@@ -19,7 +19,7 @@ class AdsCampaignFactory extends Factory
         return [
             //
             'title' => fake()->name(),
-            'original' => fake()->imageUrl(800, 200),
+            'original' => fake()->imageUrl(800, 250),
             'thumbnail' => fake()->imageUrl(800, 500),
             'link_to_campaign' => fake()->imageUrl(),
             'is_active' => fake()->boolean(),

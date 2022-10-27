@@ -15,6 +15,7 @@ class Product extends Model
         'name',
         'top_features',
         'description',
+        'product_info',
         'is_discount',
         'is_trending',
         'origin_price',

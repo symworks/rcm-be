@@ -23,8 +23,9 @@ class ProductFactory extends Factory
         return [
             //
             'name' => fake()->name(),
-            'top_features' => fake()->name(),
-            'description' => fake()->name(),
+            'top_features' => fake()->paragraph(5, 2),
+            'description' => fake()->paragraph(50, 3),
+            'product_info' => fake()->paragraph(4),
             'is_discount' => fake()->boolean(),
             'is_trending' => fake()->boolean(),
             'origin_price' => fake()->randomFloat(2, 0, 200000),
@@ -32,10 +33,10 @@ class ProductFactory extends Factory
             'average_evaluation' => fake()->randomFloat(2, 0, 5),
             'total_evaluation' => fake()->numberBetween(0, 1000),
             'image_1' => fake()->imageUrl(400, 400),
-            'image_2' => fake()->imageUrl(),
-            'image_3' => fake()->imageUrl(),
-            'image_4' => fake()->imageUrl(),
-            'image_5' => fake()->imageUrl(),
+            'image_2' => fake()->imageUrl(400, 400),
+            'image_3' => fake()->imageUrl(400, 400),
+            'image_4' => fake()->imageUrl(400, 400),
+            'image_5' => fake()->imageUrl(400, 400),
             'product_type_id' => fake()->randomElement($productTypes),
         ];
     }

@@ -17,15 +17,22 @@ class AdsCampaignController extends Controller
     public function index(Request $request)
     {
         //
-        $per_page = 15;
+        $perPage = 15;
         if ($request->has('per_page')) {
-            $per_page = $request->per_page > $per_page ? $per_page : $request->per_page;
+            $perPage = $request->per_page;
+        }
+
+        $adsCampaigns = [];
+        if (!$request->has('is_active')) {
+            $adsCampaigns = AdsCampaign::paginate($perPage);
+        } else {
+            $adsCampaigns = AdsCampaign::where('is_active', $request->is_active)->paginate($perPage);
         }
 
         return [
             'error_code' => 200,
             'msg' => 'Successfully',
-            'payload' => AdsCampaign::paginate($per_page),
+            'payload' => $adsCampaigns,
         ];
     }
 

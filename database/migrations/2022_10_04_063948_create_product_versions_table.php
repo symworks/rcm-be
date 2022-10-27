@@ -13,30 +13,22 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('product_versions', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->longText('top_features');
-            $table->longText('description');
-            $table->longText('product_info');
-            $table->boolean('is_discount');
-            $table->boolean('is_trending');
-            $table->float('origin_price');
             $table->float('official_price');
-            $table->float('average_evaluation');
-            $table->integer('total_evaluation');
-            $table->string('image_1');
-            $table->string('image_2');
-            $table->string('image_3');
-            $table->string('image_4');
-            $table->string('image_5');
+            $table->float('origin_price');
+            $table->boolean('is_default');
+            $table->unsignedInteger('instock_qty');
+            $table->unsignedInteger('sold_qty');
+            $table->unsignedInteger('busy_qty');
             $table->timestamps();
 
-            $table->unsignedBigInteger('product_type_id')->nullable();
+            $table->unsignedBigInteger('product_id')->nullable();
             $table->unsignedBigInteger('created_by_id')->nullable();
             $table->unsignedBigInteger('updated_by_id')->nullable();
 
-            $table->foreign('product_type_id')->references('id')->on('product_types')->onDelete('cascade');
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->foreign('created_by_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('updated_by_id')->references('id')->on('users')->onDelete('cascade');
         });
@@ -49,6 +41,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('product_versions');
     }
 };

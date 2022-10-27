@@ -15,7 +15,7 @@ class ProductBrandController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function indexByProductId(Request $request, $product_id)
+    public function indexByProductId(Request $request, $product_type_id)
     {
         //
         $per_page = 15;
@@ -26,7 +26,7 @@ class ProductBrandController extends Controller
         return [
             'error_code' => 200,
             'msg' => 'Successfully',
-            'payload' => ProductBrand::where('product_id', $product_id)->paginate($per_page),
+            'payload' => ProductBrand::where('product_type_id', $product_type_id)->paginate($per_page),
         ];
     }
 
@@ -41,10 +41,9 @@ class ProductBrandController extends Controller
             'error_code' => 200,
             'msg' => 'Successfully',
             'payload' => DB::table('product_brands')
-                ->join('products', 'product_brands.product_id', '=', 'products.id')
-                ->where('products.name', $product_name)
+                ->join('product_types', 'product_brands.product_type_id', '=', 'product_types.id')
+                ->where('product_types.name', $product_name)
                 ->select('product_brands.*')
-                // ->get()
                 ->paginate($per_page),
         ];
     }
@@ -72,7 +71,7 @@ class ProductBrandController extends Controller
             [
                 'name' => ['required', 'string', 'max:255'],
                 'logo' => ['required', 'string', 'max:255'],
-                'product_id' => ['required', 'integer'],
+                'product_type_id' => ['required', 'integer'],
             ]
         );
 
@@ -129,7 +128,7 @@ class ProductBrandController extends Controller
             [
                 'name' => ['required', 'string', 'max:255'],
                 'logo' => ['required', 'string', 'max:255'],
-                'product_id' => ['required', 'integer'],
+                'product_type_id' => ['required', 'integer'],
             ]
         );
 

@@ -8,23 +8,12 @@ use App\Models\Product;
 use App\Models\ProductBrand;
 use App\Models\ProductDemand;
 use App\Models\ProductType;
+use Illuminate\Support\Facades\DB;
 
 class UiController extends Controller
 {
     //
-    public function category_home()
-    {
-        return [
-            'error_code' => 200,
-            'msg' => 'Successfully',
-            'payload' => [
-                'product_types' => ProductType::where('is_active', true)->paginate(10),
-                'ads_campaigns' => AdsCampaign::where('is_active', true)->paginate(5),
-            ]
-        ];
-    }
-
-    public function category_menu($product_id)
+    public function rcm_category_menu($product_id)
     {
         return [
             'error_code' => 200,
@@ -35,6 +24,17 @@ class UiController extends Controller
                 'product_demands' => ProductDemand::where('product_id', $product_id)->select('id', 'name')->paginate(10),
                 'trendings' => Product::where('is_trending', true)->select('id', 'name')->paginate(10),
             ],
+        ];
+    }
+
+    public function rcm_product_list($product_type_id)
+    {
+        return [
+            'error_code' => 200,
+            'msg' => 'Successfully',
+            'payload' => [
+                'products' => Product::where('product_type_id', $product_type_id)->paginate(20),
+            ]
         ];
     }
 }

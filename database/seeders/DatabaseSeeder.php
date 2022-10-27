@@ -32,5 +32,9 @@ class DatabaseSeeder extends Seeder
         $this->call(PriceRangeSeeder::class);
         $this->call(RoleSeeder::class);
         $this->call(AdsCampaignSeeder::class);
+        $this->call(ProductVersionSeeder::class);
+        $this->call(ProductColorSeeder::class);
+        $this->call(ProductColorQtySeeder::class);
+        $this->call(ProductEvaluateSeeder::class);
     }
 }

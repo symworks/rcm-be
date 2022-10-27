@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreProductEvaluateRequest;
-use App\Http\Requests\UpdateProductEvaluateRequest;
-use App\Models\ProductEvaluate;
+use App\Http\Requests\StoreProductColorQtyRequest;
+use App\Http\Requests\UpdateProductColorQtyRequest;
+use App\Models\ProductColorQty;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class ProductEvaluateController extends Controller
+class ProductColorQtyController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -23,9 +23,10 @@ class ProductEvaluateController extends Controller
             $perPage = $request->per_page;
         }
 
-        $queryBuilder = ProductEvaluate::select('*');
-        if ($request->has('product_id')) {
-            $queryBuilder = $queryBuilder->where('product_id', $request->product_id);
+        $queryBuilder = ProductColorQty::select('*');
+
+        if ($request->has('product_version_id')) {
+            $queryBuilder = $queryBuilder->where('product_version_id', $request->product_version_id);
         }
 
         return [
@@ -35,7 +36,7 @@ class ProductEvaluateController extends Controller
         ];
     }
 
-    public function indexWithCreatedUser(Request $request)
+    public function indexWithColorName(Request $request)
     {
         //
         $perPage = 15;
@@ -43,12 +44,11 @@ class ProductEvaluateController extends Controller
             $perPage = $request->per_page;
         }
 
-        $queryBuilder = DB::table('product_evaluates')
-            ->join('users', 'product_evaluates.created_by_id', '=', 'users.id')
-            ->select('product_evaluates.*', 'users.name', 'users.avatar');
+        $queryBuilder = DB::table('product_color_qties')
+            ->join('product_colors', 'product_color_qties.product_color_id', '=', 'product_colors.id');
 
-        if ($request->has('product_id')) {
-            $queryBuilder = $queryBuilder->where('product_evaluates.product_id', $request->product_id);
+        if ($request->has('product_version_id')) {
+            $queryBuilder = $queryBuilder->where('product_color_qties.product_version_id', $request->product_version_id);
         }
 
         return [
@@ -71,10 +71,10 @@ class ProductEvaluateController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreProductEvaluateRequest  $request
+     * @param  \App\Http\Requests\StoreProductColorQtyRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreProductEvaluateRequest $request)
+    public function store(StoreProductColorQtyRequest $request)
     {
         //
     }
@@ -82,10 +82,10 @@ class ProductEvaluateController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\ProductEvaluate  $productEvaluate
+     * @param  \App\Models\ProductColorQty  $productColorQty
      * @return \Illuminate\Http\Response
      */
-    public function show(ProductEvaluate $productEvaluate)
+    public function show(ProductColorQty $productColorQty)
     {
         //
     }
@@ -93,10 +93,10 @@ class ProductEvaluateController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\ProductEvaluate  $productEvaluate
+     * @param  \App\Models\ProductColorQty  $productColorQty
      * @return \Illuminate\Http\Response
      */
-    public function edit(ProductEvaluate $productEvaluate)
+    public function edit(ProductColorQty $productColorQty)
     {
         //
     }
@@ -104,11 +104,11 @@ class ProductEvaluateController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateProductEvaluateRequest  $request
-     * @param  \App\Models\ProductEvaluate  $productEvaluate
+     * @param  \App\Http\Requests\UpdateProductColorQtyRequest  $request
+     * @param  \App\Models\ProductColorQty  $productColorQty
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateProductEvaluateRequest $request, ProductEvaluate $productEvaluate)
+    public function update(UpdateProductColorQtyRequest $request, ProductColorQty $productColorQty)
     {
         //
     }
@@ -116,10 +116,10 @@ class ProductEvaluateController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\ProductEvaluate  $productEvaluate
+     * @param  \App\Models\ProductColorQty  $productColorQty
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ProductEvaluate $productEvaluate)
+    public function destroy(ProductColorQty $productColorQty)
     {
         //
     }

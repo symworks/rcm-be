@@ -7,14 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class ProductBrand extends Model
+class ProductVersion extends Model
 {
     use HasFactory, Notifiable, HasApiTokens;
 
     protected $fillable = [
         'name',
-        'logo',
-        'product_type_id',
+        'official_price',
+        'origin_price',
+        'is_default',
+        'product_id',
+        'created_by_id',
+        'updated_by_id',
     ];
 
     protected $hidden = [

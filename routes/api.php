@@ -11,9 +11,13 @@ use App\Http\Controllers\CategoryProductTagController;
 use App\Http\Controllers\CategoryRoleController;
 use App\Http\Controllers\PriceRangeController;
 use App\Http\Controllers\ProductBrandController;
+use App\Http\Controllers\ProductColorController;
+use App\Http\Controllers\ProductColorQtyController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductEvaluateController;
 use App\Http\Controllers\ProductTagController;
 use App\Http\Controllers\ProductTypeController;
+use App\Http\Controllers\ProductVersionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UiController;
 use App\Models\CategoryCurrency;
@@ -68,8 +72,17 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->middleware('auth')
     ->name('logout');
 
-Route::get('/ui/rcm/category_home', [UiController::class, 'category_home']);
-Route::get('/ui/rcm/category_menu/{product_id}', [UiController::class, 'category_menu']);
+// Ui
+Route::get('/ui/rcm/category_menu/{product_id}', [UiController::class, 'rcm_category_menu']);
+
+Route::get('/ui/rcm/product_list/{product_type_id}', [UiController::class, 'rcm_product_list']);
+
+// Product
+Route::get('/product', [ProductController::class, 'index']);
+
+Route::get('/product/product_id/{id}', [ProductController::class, 'productById']);
+
+Route::get('/product/product_type_id/{product_type_id}', [ProductController::class, 'productByProductTypeId']);
 
 Route::get('/product_type', [ProductTypeController::class, 'index']);
 
@@ -80,6 +93,22 @@ Route::get('/product_brand/product_name/{product_name}', [ProductBrandController
 Route::get('/price_range/{product_id}', [PriceRangeController::class, 'index']);
 
 Route::get('/ads_campaign', [AdsCampaignController::class, 'index']);
+
+// Product version
+Route::get('/product_version', [ProductVersionController::class, 'index']);
+
+// Product color
+Route::get('/product_color', [ProductColorController::class, 'index']);
+
+// Product color qty
+Route::get('/product_color_qty', [ProductColorQtyController::class, 'index']);
+
+Route::get('/product_color_qty/with_name', [ProductColorQtyController::class, 'indexWithColorName']);
+
+// Product evaluate
+Route::get('/product_evaluate', [ProductEvaluateController::class, 'index']);
+
+Route::get('/product_evaluate/with_created_user', [ProductEvaluateController::class, 'indexWithCreatedUser']);
 
 Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::get('/category_role', [CategoryRoleController::class, 'index']);
@@ -134,8 +163,6 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
 
     Route::delete('/product_brand/{id}', [ProductBrandController::class, 'delete'])
         ->middleware('role:Admin');
-
-    Route::get('/product', [ProductController::class, 'index']);
 
     Route::post('/product', [ProductController::class, 'store'])
         ->middleware('role:Admin');

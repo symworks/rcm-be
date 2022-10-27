@@ -19,7 +19,7 @@ class ProductTypeFactory extends Factory
         $ui_icons = ['icon-screen-tablet', 'icon-earphones', 'icon-star', 'icon-trash', 'icon-plus'];
         return [
             //
-            'name' => fake()->name(),
+            'name' => fake()->unique()->name(),
             'is_active' => fake()->boolean(),
             'ui_icon' => fake()->randomElement($ui_icons),
         ];

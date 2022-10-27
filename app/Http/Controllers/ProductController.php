@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -13,13 +14,75 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
+        $perPage = 15;
+        if ($request->has('per_page')) {
+            $perPage = $request->per_page;
+        }
+
+        $queryBuilder = Product::select('*');
+
+        if ($request->has('id')) {
+            $queryBuilder = $queryBuilder->where('id', $request->id);
+        }
+
+        if ($request->has('product_type_id')) {
+            $queryBuilder = $queryBuilder->where('product_type_id', $request->product_type_id);
+        }
+
+        if ($request->has('price_order')) {
+            if ($request->price_order === 'asc') {
+                $queryBuilder = $queryBuilder->orderBy('official_price', 'asc');
+            } else {
+                $queryBuilder = $queryBuilder->orderBy('official_price', 'desc');
+            }
+        }
+
         return [
-            'code' => 200,
+            'error_code' => 200,
             'msg' => 'successfully',
-            'payload' => Product::paginate(15)
+            'payload' => $queryBuilder->paginate($perPage),
+        ];
+    }
+
+    public function productById($id)
+    {
+        return [
+            'error_code' => 200,
+            'msg' => 'successfully',
+            'payload' => Product::where('id', $id)->get()
+        ];
+    }
+
+    public function productByProductTypeId(Request $request, $product_type_id)
+    {
+        //
+        $per_page = $request->per_page;
+        if (!$per_page) {
+            return [
+                'error_code' => 400,
+                'msg' => 'per_page does not exist',
+            ];
+        }
+
+        $priceOrder = $request->price_order;
+
+        $products = [];
+
+        if ($priceOrder === 'asc') {
+            $products = Product::where('product_type_id', $product_type_id)->orderBy('official_price', 'asc')->paginate($per_page);
+        } else if ($priceOrder === 'desc') {
+            $products = Product::where('product_type_id', $product_type_id)->orderBy('official_price', 'desc')->paginate($per_page);
+        } else {
+            $products = Product::where('product_type_id', $product_type_id)->paginate($per_page);
+        }
+
+        return [
+            'error_code' => 200,
+            'msg' => 'successfully',
+            'payload' => $products,
         ];
     }
 

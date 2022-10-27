@@ -3,13 +3,12 @@
 namespace Database\Factories;
 
 use App\Models\Product;
-use App\Models\ProductType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ProductBrand>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ProductColor>
  */
-class ProductBrandFactory extends Factory
+class ProductColorFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,12 +17,13 @@ class ProductBrandFactory extends Factory
      */
     public function definition()
     {
-        $productTypeIds = ProductType::pluck('id')->toArray();
+        $productIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
         return [
             //
             'name' => fake()->name(),
-            'logo' => fake()->imageUrl(100, 35),
-            'product_type_id' => fake()->randomElement($productTypeIds),
+            'rgb_value' => fake()->rgbColor(),
+            'is_default' => fake()->boolean(),
+            'product_id' => fake()->randomElement($productIds),
         ];
     }
 }
