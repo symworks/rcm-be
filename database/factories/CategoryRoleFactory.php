@@ -18,6 +18,8 @@ class CategoryRoleFactory extends Factory
     {
         return [
             //
+            'name' => fake()->name(),
+            'is_system_role' => fake()->boolean(),
         ];
     }
 }

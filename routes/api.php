@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryRoleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,4 +17,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::group(['middleware' => ['auth:sanctum']], function() {
+    Route::get('/category_roles', [CategoryRoleController::class, 'index']);
+    Route::post('/category_roles', [CategoryRoleController::class, 'store']);
 });
