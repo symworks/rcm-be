@@ -13,12 +13,16 @@ class ProductVersion extends Model
 
     protected $fillable = [
         'name',
-        'official_price',
         'origin_price',
-        'is_default',
+        'official_price',
+        'default_image',
+        'instock_qty',
+        'sold_qty',
+        'busy_qty',
         'product_id',
-        'created_by_id',
-        'updated_by_id',
+        'product_name',
+        'product_type_id',
+        'product_type_name',
     ];
 
     protected $hidden = [

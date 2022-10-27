@@ -169,6 +169,15 @@ Route::delete('/user/{id}', [RoleController::class, 'destroy'])
 // Product
 Route::get('/product', [ProductController::class, 'index']);
 
+Route::post('/product', [ProductController::class, 'store'])
+    ->middleware('role:Admin');
+
+Route::patch('/product', [ProductController::class, 'update'])
+    ->middleware('role:Admin');
+
+Route::delete('product/{id}', [ProductController::class, 'destroy'])
+    ->middleware('role:Admin');
+
 // Product Type
 Route::get('/product_type', [ProductTypeController::class, 'index']);
 
@@ -205,6 +214,18 @@ Route::patch('/store', [StoreController::class, 'update'])
 Route::delete('/store', [StoreController::class, 'destroy'])
     ->middleware('role:Admin');
 
+// Product version
+Route::get('/product_version', [ProductVersionController::class, 'index']);
+
+Route::post('/product_version', [ProductVersionController::class, 'store'])
+    ->middleware('role:Admin');
+
+Route::patch('/product_version', [ProductVersionController::class, 'update'])
+    ->middleware('role:Admin');
+
+Route::delete('/product_version/{id}', [ProductVersionController::class, 'destroy'])
+    ->middleware('role:Admin');
+
 // Product Brand
 Route::get('/product_brand/product_id/{product_id}', [ProductBrandController::class, 'indexByProductId']);
 
@@ -215,9 +236,6 @@ Route::get('/price_range/{product_id}', [PriceRangeController::class, 'index']);
 
 // Ads campaign
 Route::get('/ads_campaign', [AdsCampaignController::class, 'index']);
-
-// Product version
-Route::get('/product_version', [ProductVersionController::class, 'index']);
 
 // Product image
 Route::get('/product_image', [ProductImageController::class, 'index']);
@@ -287,9 +305,6 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::delete('/product_brand/{id}', [ProductBrandController::class, 'delete'])
         ->middleware('role:Admin');
 
-    Route::post('/product', [ProductController::class, 'store'])
-        ->middleware('role:Admin');
-    
     Route::patch('/product/{id}', [ProductController::class, 'update'])
         ->middleware('role:Admin');
 

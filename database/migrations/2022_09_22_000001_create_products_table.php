@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->longText('top_features');
             $table->longText('description');
             $table->longText('product_info');
@@ -23,6 +24,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unsignedBigInteger('product_type_id')->nullable();
+            $table->string('product_type_name')->nullabel();
             $table->unsignedBigInteger('created_by_id')->nullable();
             $table->unsignedBigInteger('updated_by_id')->nullable();
 

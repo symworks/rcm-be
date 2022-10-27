@@ -25,8 +25,14 @@ class ProductTypeController extends Controller
         $results = [];
 
         $queryBuilder = ProductType::select('*');
-        if ($request->has('is_active')) {
-            $queryBuilder = $queryBuilder->where('is_active', $request->is_active);
+        if ($request->has('fields')) {
+            $queryBuilder = $queryBuilder->select($request->fields);
+        } else {
+            $queryBuilder = $queryBuilder->select('*');
+        }
+
+        if ($request->has('match_col') && $request->has('match_key')) {
+            $queryBuilder = $queryBuilder->where($request->match_col, $request->match_key);
         }
 
         if ($request->has('find_col') && $request->has('find_key')) {

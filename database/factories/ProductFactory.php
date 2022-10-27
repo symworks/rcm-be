@@ -18,16 +18,18 @@ class ProductFactory extends Factory
      */
     public function definition()
     {
-        $productTypes = ProductType::pluck('id')->toArray();
+        $productType = fake()->randomElement(ProductType::all());
 
         return [
             //
+            'name' => fake()->name(),
             'top_features' => fake()->paragraph(5, 2),
             'description' => fake()->paragraph(50, 3),
             'product_info' => fake()->paragraph(4),
             'average_evaluation' => fake()->randomFloat(2, 0, 5),
             'total_evaluation' => fake()->numberBetween(0, 1000),
-            'product_type_id' => fake()->randomElement($productTypes),
+            'product_type_id' => $productType->id,
+            'product_type_name' => $productType->name,
         ];
     }
 }

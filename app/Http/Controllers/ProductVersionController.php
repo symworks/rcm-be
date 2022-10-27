@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreProductVersionRequest;
-use App\Http\Requests\UpdateProductVersionRequest;
 use App\Models\ProductVersion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -23,60 +21,41 @@ class ProductVersionController extends Controller
             $perPage = $request->per_page;
         }
 
-        $queryBuilder = DB::table('product_versions')
-        ->join('product_images', 'product_versions.product_image_id', 'product_images.id')
-        ->join('products', 'products.id', 'product_versions.product_id')
-        ->select('product_versions.*', 'product_images.image_url', 'products.average_evaluation', 'products.product_type_id', 'products.product_info');
+        $results = [];
 
-        if ($request->has('id')) {
-            $queryBuilder = $queryBuilder->where('product_versions.id', $request->id);
-        }
-
-        if ($request->has('product_version_ids')) {
-            $productVersionIds = $request->product_version_ids;
-            for ($i = 0; $i < count($productVersionIds); $i++) {
-                $queryBuilder = $queryBuilder->orWhere('product_versions.id', $productVersionIds[$i]);
-            }
-        }
-
-        if ($request->has('product_id')) {
-            $queryBuilder = $queryBuilder->where('product_versions.product_id', $request->product_id);
-        }
-
-        if ($request->has('product_type_id')) {
-            $queryBuilder = $queryBuilder->where('products.product_type_id', $request->product_type_id);
-        }
-
-        // qty_critical
-        // 1. instock
-        // 2. sold
-        // 3. busy
-        // 4. not specified
-
-        if ($request->has('critical')) {
-            switch ($request->qty_critical) {
-            case 'instock':
-                $queryBuilder = $queryBuilder->where('instock_qty', '>', 0);
-            case 'sold':
-                $queryBuilder = $queryBuilder->where('instock_qty', '>', 0);
-            case 'busy':
-                $queryBuilder = $queryBuilder->where('busy_qty', '>', 0);
-            default:
-                // Do nothing
-            }
-        }
-
-        $result = [];
-        if (!$request->has('use_paginate') || $request->use_paginate === 'true') {
-            $result = $queryBuilder->paginate($perPage);
+        $queryBuilder = DB::table('product_versions');
+        if ($request->has('fields')) {
+            $queryBuilder = $queryBuilder->select($request->fields);
         } else {
-            $result = $queryBuilder->get();
+            $queryBuilder = $queryBuilder->select('*');
+        }
+
+        if ($request->has('match_col') && $request->has('match_key')) {
+            $queryBuilder = $queryBuilder->where($request->match_col, $request->match_key);
+        }
+
+        if ($request->has('find_col') && $request->has('find_key')) {
+            $queryBuilder = $queryBuilder->where($request->find_col, 'like', '%'.$request->find_key.'%');
+        }
+
+        if ($request->has('order_col') && $request->has('order_key')) {
+            $queryBuilder = $queryBuilder->orderBy($request->order_col, $request->order_key);
+        }
+
+        if ($request->has('numcomp_col') && $request->has('numcomp_opt') && $request->has('numcomp_val')) {
+            $queryBuilder = $queryBuilder->where($request->numcomp_col, $request->numcomp_opt, $request->numcomp_val);
+        }
+
+        if (!$request->has('use_paginate') || $request->use_paginate == 'true') {
+            $results = $queryBuilder->paginate($perPage);
+        } else {
+            $results = $queryBuilder->get();
         }
 
         return [
             'error_code' => 200,
             'msg' => 'Successfully',
-            'payload' => $result,
+            'payload' => $results,
         ];
     }
 
@@ -96,9 +75,44 @@ class ProductVersionController extends Controller
      * @param  \App\Http\Requests\StoreProductVersionRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreProductVersionRequest $request)
+    public function store(Request $request)
     {
         //
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'origin_price' => ['required', 'numeric'],
+            'official_price' => ['required', 'numeric'],
+            'instock_qty' => ['required', 'numeric'],
+            'sold_qty' => ['required', 'numeric'],
+            'busy_qty' => ['required', 'numeric'],
+            'product_id' => ['required', 'numeric'],
+            'product_name' => ['required', 'string', 'max:255'],
+            'product_type_id' => ['required', 'numeric'],
+            'product_type_name' => ['required', 'string', 'max:255'],
+        ]);
+
+        $productVersion = new ProductVersion();
+        $productVersion->name = $request->name;
+        $productVersion->origin_price = $request->origin_price;
+        $productVersion->official_price = $request->official_price;
+        $productVersion->instock_qty = $request->instock_qty;
+        $productVersion->sold_qty = $request->sold_qty;
+        $productVersion->busy_qty = $request->busy_qty;
+        $productVersion->product_id = $request->product_id;
+        $productVersion->product_name = $request->product_name;
+        $productVersion->product_type_id = $request->product_type_id;
+        $productVersion->product_type_name = $request->product_type_name;
+
+        $productVersion->created_by_id = $request->user()->id;
+        $productVersion->save();
+
+        return [
+            'error_code' => 200,
+            'msg' => 'Successfully',
+            'payload' => [
+                'insertedId' => $productVersion->id,
+            ]
+        ];
     }
 
     /**
@@ -130,9 +144,48 @@ class ProductVersionController extends Controller
      * @param  \App\Models\ProductVersion  $productVersion
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateProductVersionRequest $request, ProductVersion $productVersion)
+    public function update(Request $request)
     {
         //
+        $request->validate(
+            [
+                'id' => ['required', 'numeric'],
+                'name' => ['required', 'string', 'max:255'],
+                'origin_price' => ['required', 'numeric'],
+                'official_price' => ['required', 'numeric'],
+                'instock_qty' => ['required', 'numeric'],
+                'sold_qty' => ['required', 'numeric'],
+                'busy_qty' => ['required', 'numeric'],
+                'product_id' => ['required', 'numeric'],
+                'product_name' => ['required', 'string', 'max:255'],
+                'product_type_id' => ['required', 'numeric'],
+                'product_type_name' => ['required', 'string', 'max:255'],
+            ]
+        );
+
+        $affected = ProductVersion::where('id', $request->id)
+        ->update([
+            'name' => $request->name,
+            'origin_price' => $request->origin_price,
+            'official_price' => $request->official_price,
+            'instock_qty' => $request->instock_qty,
+            'sold_qty' => $request->sold_qty,
+            'busy_qty' => $request->busy_qty,
+            'product_id' => $request->product_id,
+            'product_name' => $request->product_name,
+            'product_type_id' => $request->product_type_id,
+            'product_type_name' => $request->product_type_name,
+        ]);
+
+        return response()->json(
+            [
+                'error_code' => 200,
+                'msg' => 'Successfully',
+                'payload' => [
+                    'updatedCount' => $affected
+                ]
+            ]
+        );
     }
 
     /**
@@ -141,8 +194,24 @@ class ProductVersionController extends Controller
      * @param  \App\Models\ProductVersion  $productVersion
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ProductVersion $productVersion)
+    public function destroy($id)
     {
         //
+        $productVersion = ProductVersion::find($id);
+        if (!$productVersion) {
+            return [
+                'error_code' => 400,
+                'msg' => 'Product version not found',
+            ];
+        }
+
+        $affected = $productVersion->delete();
+        return [
+            'error_code' => 200,
+            'msg' => 'Successfully',
+            'payload' => [
+                'affected' => $affected,
+            ]
+        ];
     }
 }

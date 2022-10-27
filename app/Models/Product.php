@@ -16,16 +16,10 @@ class Product extends Model
         'top_features',
         'description',
         'product_info',
-        'is_trending',
         'average_evaluation',
         'total_evaluation',
-        'image_1',
-        'image_2',
-        'image_3',
-        'image_4',
-        'image_5',
-
         'product_type_id',
+        'product_type_name',
     ];
 
     protected $hidden = [

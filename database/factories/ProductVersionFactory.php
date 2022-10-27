@@ -18,19 +18,22 @@ class ProductVersionFactory extends Factory
      */
     public function definition()
     {
-        $productId = fake()->randomElement(Product::pluck('id')->toArray());
+        $product = fake()->randomElement(Product::all());
         return [
             //
             'name' => fake()->unique()->name(),
             'origin_price' => fake()->randomFloat(2, 0, 200000),
             'official_price' => fake()->randomFloat(2, 0, 200000),
+            'default_image' => fake()->imageUrl(400, 400),
 
             'instock_qty' => fake()->numberBetween(0, 500),
             'sold_qty' => fake()->numberBetween(0, 500),
             'busy_qty' => fake()->numberBetween(0, 500),
 
-            'product_id' => $productId,
-            'product_image_id' => fake()->randomElement(ProductImage::where('product_id', $productId)->pluck('id')->toArray()),
+            'product_id' => $product->id,
+            'product_name' => $product->name,
+            'product_type_id' => $product->product_type_id,
+            'product_type_name' => $product->product_type_name,
         ];
     }
 }
