@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreCategoryProductBrandRequest;
-use App\Http\Requests\UpdateCategoryProductBrandRequest;
-use App\Models\CategoryProductBrand;
+use App\Http\Requests\StoreProductBrandRequest;
+use App\Http\Requests\UpdateProductBrandRequest;
+use App\Models\ProductBrand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class CategoryProductBrandController extends Controller
+class ProductBrandController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -26,7 +26,7 @@ class CategoryProductBrandController extends Controller
         return [
             'error_code' => 200,
             'msg' => 'Successfully',
-            'payload' => CategoryProductBrand::where('product_id', $product_id)->paginate($per_page),
+            'payload' => ProductBrand::where('product_id', $product_id)->paginate($per_page),
         ];
     }
 
@@ -62,10 +62,10 @@ class CategoryProductBrandController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreCategoryProductBrandRequest  $request
+     * @param  \App\Http\Requests\StoreProductBrandRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreCategoryProductBrandRequest $request)
+    public function store(StoreProductBrandRequest $request)
     {
         //
         $request->validate(
@@ -76,7 +76,7 @@ class CategoryProductBrandController extends Controller
             ]
         );
 
-        $productBrand = new CategoryProductBrand();
+        $productBrand = new ProductBrand();
         $productBrand->fill($request->all());
         $productBrand->created_by_id = $request->user()->id;
         $productBrand->updated_by_id = $request->user()->id;
@@ -96,10 +96,10 @@ class CategoryProductBrandController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\CategoryProductBrand  $productBrand
+     * @param  \App\Models\ProductBrand  $productBrand
      * @return \Illuminate\Http\Response
      */
-    public function show(CategoryProductBrand $productBrand)
+    public function show(ProductBrand $productBrand)
     {
         //
     }
@@ -107,10 +107,10 @@ class CategoryProductBrandController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\CategoryProductBrand  $productBrand
+     * @param  \App\Models\ProductBrand  $productBrand
      * @return \Illuminate\Http\Response
      */
-    public function edit(CategoryProductBrand $productBrand)
+    public function edit(ProductBrand $productBrand)
     {
         //
     }
@@ -118,11 +118,11 @@ class CategoryProductBrandController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateCategoryProductBrandRequest  $request
-     * @param  \App\Models\CategoryProductBrand  $productBrand
+     * @param  \App\Http\Requests\UpdateProductBrandRequest  $request
+     * @param  \App\Models\ProductBrand  $productBrand
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateCategoryProductBrandRequest $request, $id)
+    public function update(UpdateProductBrandRequest $request, $id)
     {
         //
         $request->validate(
@@ -133,10 +133,10 @@ class CategoryProductBrandController extends Controller
             ]
         );
 
-        $productBrand = new CategoryProductBrand();
+        $productBrand = new ProductBrand();
         $productBrand->fill($request->all());
 
-        $affected = CategoryProductBrand::where('id', $id)->update($productBrand->toArray());
+        $affected = ProductBrand::where('id', $id)->update($productBrand->toArray());
 
         return response()->json(
             [
@@ -152,24 +152,24 @@ class CategoryProductBrandController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\CategoryProductBrand  $productBrand
+     * @param  \App\Models\ProductBrand  $productBrand
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         //
-        $existCategoryProductBrand = CategoryProductBrand::find($id);
-        if (!$existCategoryProductBrand) {
+        $existProductBrand = ProductBrand::find($id);
+        if (!$existProductBrand) {
             return response()->json(
                 [
                     'error_code' => 400,
-                    'msg' => 'Invalid CategoryProductBrand ID',
+                    'msg' => 'Invalid ProductBrand ID',
                     'payload' => null
                 ]
             );
         }
 
-        $affected = $existCategoryProductBrand->delete();
+        $affected = $existProductBrand->delete();
         return response()->json(
             [
                 'error_code' => 200,

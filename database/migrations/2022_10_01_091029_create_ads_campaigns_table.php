@@ -13,9 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('category_product_types', function (Blueprint $table) {
+        Schema::create('ads_campaigns', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
+            $table->string('title');
+            $table->string('original');
+            $table->string('thumbnail');
+            $table->string('link_to_campaign');
+            $table->boolean('is_active');
             $table->timestamps();
         });
     }
@@ -27,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('category_product_types');
+        Schema::dropIfExists('ads_campaigns');
     }
 };

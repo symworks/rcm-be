@@ -31,15 +31,11 @@ return new class extends Migration
             $table->string('image_5');
             $table->timestamps();
 
-            $table->unsignedBigInteger('producer_id')->nullable();
-            $table->unsignedBigInteger('category_currency_id')->nullable();
-            $table->unsignedBigInteger('category_product_id')->nullable();
-            $table->unsignedBigInteger('category_product_type_id')->nullable();
+            $table->unsignedBigInteger('product_type_id')->nullable();
             $table->unsignedBigInteger('created_by_id')->nullable();
             $table->unsignedBigInteger('updated_by_id')->nullable();
 
-            $table->foreign('producer_id')->references('id')->on('producers')->onDelete('cascade');
-            $table->foreign('category_currency_id')->references('id')->on('category_currencies')->onDelete('cascade');
+            $table->foreign('product_type_id')->references('id')->on('product_types')->onDelete('cascade');
             $table->foreign('created_by_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('updated_by_id')->references('id')->on('users')->onDelete('cascade');
         });

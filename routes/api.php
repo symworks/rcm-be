@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdsCampaignController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\NewPasswordController;
@@ -7,15 +8,14 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\CategoryProductTagController;
-use App\Http\Controllers\CategoryProductTypeController;
 use App\Http\Controllers\CategoryRoleController;
 use App\Http\Controllers\PriceRangeController;
-use App\Http\Controllers\ProducerController;
-use App\Http\Controllers\CategoryProductBrandController;
+use App\Http\Controllers\ProductBrandController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductTagController;
+use App\Http\Controllers\ProductTypeController;
 use App\Http\Controllers\RoleController;
-use App\Http\Controllers\UiRcmController;
+use App\Http\Controllers\UiController;
 use App\Models\CategoryCurrency;
 use App\Models\CategoryNation;
 use Illuminate\Http\Request;
@@ -68,15 +68,18 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->middleware('auth')
     ->name('logout');
 
-Route::get('/ui/rcm/menu_product', [UiRcmController::class, 'menuProduct']);
+Route::get('/ui/rcm/category_home', [UiController::class, 'category_home']);
+Route::get('/ui/rcm/category_menu/{product_id}', [UiController::class, 'category_menu']);
 
-Route::get('/ui/rcm/menu_detail/{product_id}', [UiRcmController::class, 'menuDetail']);
+Route::get('/product_type', [ProductTypeController::class, 'index']);
 
-Route::get('/product_brand/product_id/{product_id}', [CategoryProductBrandController::class, 'indexByProductId']);
+Route::get('/product_brand/product_id/{product_id}', [ProductBrandController::class, 'indexByProductId']);
 
-Route::get('/product_brand/product_name/{product_name}', [CategoryProductBrandController::class, 'indexByProductName']);
+Route::get('/product_brand/product_name/{product_name}', [ProductBrandController::class, 'indexByProductName']);
 
 Route::get('/price_range/{product_id}', [PriceRangeController::class, 'index']);
+
+Route::get('/ads_campaign', [AdsCampaignController::class, 'index']);
 
 Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::get('/category_role', [CategoryRoleController::class, 'index']);
@@ -123,24 +126,13 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::delete('/category_currency/{id}', [CategoryCurrency::class, 'destroy'])
         ->middleware('role:SupperUser');
 
-    Route::get('/producer', [ProducerController::class, 'index']);
-
-    Route::post('/producer', [ProducerController::class, 'store'])
+    Route::post('/product_brand', [ProductBrandController::class, 'store'])
         ->middleware('role:Admin');
 
-    Route::patch('/producer/{id}', [ProducerController::class, 'update'])
+    Route::patch('/product_brand/{id}', [ProductBrandController::class, 'update'])
         ->middleware('role:Admin');
 
-    Route::delete('producer/{id}', [ProducerController::class, 'delete'])
-        ->middleware('role:Admin');
-
-    Route::post('/product_brand', [CategoryProductBrandController::class, 'store'])
-        ->middleware('role:Admin');
-
-    Route::patch('/product_brand/{id}', [CategoryProductBrandController::class, 'update'])
-        ->middleware('role:Admin');
-
-    Route::delete('/product_brand/{id}', [CategoryProductBrandController::class, 'delete'])
+    Route::delete('/product_brand/{id}', [ProductBrandController::class, 'delete'])
         ->middleware('role:Admin');
 
     Route::get('/product', [ProductController::class, 'index']);
@@ -152,17 +144,6 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         ->middleware('role:Admin');
 
     Route::delete('/product/{id}', [ProductController::class, 'destroy'])
-        ->middleware('role:Admin');
-
-    Route::get('/category_product_type', [CategoryProductTypeController::class, 'index']);
-
-    Route::post('/category_product_type', [CategoryProductTypeController::class, 'store'])
-        ->middleware('role:Admin');
-
-    Route::patch('/category_product_type/{id}', [CategoryProductTypeController::class, 'update'])
-        ->middleware('role:Admin');
-
-    Route::delete('/category_product_type/{id}', [CategoryProductTypeController::class, 'delete'])
         ->middleware('role:Admin');
 
     Route::get('/category_product_tag', [CategoryProductTagController::class, 'index']);

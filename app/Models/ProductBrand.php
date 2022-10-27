@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class CategoryProductBrand extends Model
+class ProductBrand extends Model
 {
     use HasFactory, Notifiable, HasApiTokens;
 

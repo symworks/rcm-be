@@ -17,7 +17,7 @@ class PriceRangeFactory extends Factory
      */
     public function definition()
     {
-        $products = Product::pluck('id')->toArray();
+        $products = [1, 2, 3, 4, 5];
         return [
             //
             'min_price' => fake()->randomFloat(2, 0, 200000),

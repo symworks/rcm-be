@@ -22,15 +22,15 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
         $this->call(CategoryNationSeeder::class);
-        $this->call(CategoryProductTypeSeeder::class);
         $this->call(CategoryCurrencySeeder::class);
-        $this->call(CategoryProductSeeder::class);
         $this->call(CategoryRoleSeeder::class);
         $this->call(UserSeeder::class);
-        $this->call(ProducerSeeder::class);
+        $this->call(ProductTypeSeeder::class);
         $this->call(ProductSeeder::class);
-        $this->call(CategoryProductBrandSeeder::class);
+        $this->call(ProductDemandSeeder::class);
+        $this->call(ProductBrandSeeder::class);
         $this->call(PriceRangeSeeder::class);
         $this->call(RoleSeeder::class);
+        $this->call(AdsCampaignSeeder::class);
     }
 }

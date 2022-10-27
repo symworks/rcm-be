@@ -13,16 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('producers', function (Blueprint $table) {
+        Schema::create('product_types', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('ui_icon');
+            $table->boolean('is_active');
             $table->timestamps();
 
-            $table->unsignedBigInteger('category_nation_id');
             $table->unsignedBigInteger('created_by_id')->nullable();
             $table->unsignedBigInteger('updated_by_id')->nullable();
 
-            $table->foreign('category_nation_id')->references('id')->on('category_nations')->onDelete('cascade');
             $table->foreign('created_by_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('updated_by_id')->references('id')->on('users')->onDelete('cascade');
         });
@@ -35,6 +35,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('producers');
+        Schema::dropIfExists('product_types');
     }
 };

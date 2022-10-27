@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Producer;
+use App\Models\ProductType;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class ProducerSeeder extends Seeder
+class ProductTypeSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,6 +16,6 @@ class ProducerSeeder extends Seeder
     public function run()
     {
         //
-        Producer::factory()->count(50)->create();
+        return ProductType::factory()->count(15)->create();
     }
 }

@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\Producer;
+use App\Models\AdsCampaign;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class ProducerPolicy
+class AdsCampaignPolicy
 {
     use HandlesAuthorization;
 
@@ -25,10 +25,10 @@ class ProducerPolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Producer  $producer
+     * @param  \App\Models\AdsCampaign  $adsCampaign
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Producer $producer)
+    public function view(User $user, AdsCampaign $adsCampaign)
     {
         //
     }
@@ -48,10 +48,10 @@ class ProducerPolicy
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Producer  $producer
+     * @param  \App\Models\AdsCampaign  $adsCampaign
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Producer $producer)
+    public function update(User $user, AdsCampaign $adsCampaign)
     {
         //
     }
@@ -60,10 +60,10 @@ class ProducerPolicy
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Producer  $producer
+     * @param  \App\Models\AdsCampaign  $adsCampaign
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Producer $producer)
+    public function delete(User $user, AdsCampaign $adsCampaign)
     {
         //
     }
@@ -72,10 +72,10 @@ class ProducerPolicy
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Producer  $producer
+     * @param  \App\Models\AdsCampaign  $adsCampaign
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, Producer $producer)
+    public function restore(User $user, AdsCampaign $adsCampaign)
     {
         //
     }
@@ -84,10 +84,10 @@ class ProducerPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Producer  $producer
+     * @param  \App\Models\AdsCampaign  $adsCampaign
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, Producer $producer)
+    public function forceDelete(User $user, AdsCampaign $adsCampaign)
     {
         //
     }

@@ -2,13 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\CategoryNation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Producer>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ProductDemand>
  */
-class ProducerFactory extends Factory
+class ProductDemandFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,12 +16,11 @@ class ProducerFactory extends Factory
      */
     public function definition()
     {
-        $categoryNations = CategoryNation::pluck('id')->toArray();
+        $product_ids = [1, 2, 3, 4, 5, 6, 7];
         return [
             //
             'name' => fake()->name(),
-
-            'category_nation_id' => fake()->randomElement($categoryNations),
+            'product_id' => fake()->randomElement($product_ids),
         ];
     }
 }
