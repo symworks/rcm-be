@@ -47,6 +47,23 @@ class ProductController extends Controller
         ];
     }
 
+    public function indexNoPaginate(Request $request)
+    {
+        $queryBuilder = Product::select('*');
+        if ($request->has('ids')) {
+            $ids = $request->get('ids');
+            foreach ($ids as $id) {
+                $queryBuilder = $queryBuilder->orWhere('id', $id);
+            }
+        }
+
+        return [
+            'error_code' => 200,
+            'msg' => 'Successfully',
+            'payload' => $queryBuilder->get(),
+        ];
+    }
+
     public function productById($id)
     {
         return [

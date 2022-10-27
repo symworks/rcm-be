@@ -22,7 +22,7 @@ class ProductEvaluateFactory extends Factory
         $users = User::pluck('id')->toArray();
         return [
             //
-            'num_star' => fake()->numberBetween(0, 5),
+            'rate_value' => fake()->numberBetween(0, 5),
             'content' => fake()->paragraph(2),
             'product_id' => fake()->randomElement($products),
             'created_by_id' => fake()->randomElement($users),

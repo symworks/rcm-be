@@ -36,5 +36,9 @@ class DatabaseSeeder extends Seeder
         $this->call(ProductColorSeeder::class);
         $this->call(ProductColorQtySeeder::class);
         $this->call(ProductEvaluateSeeder::class);
+        $this->call(CategoryVnProvinceSeeder::class);
+        $this->call(CategoryVnDistrictSeeder::class);
+        $this->call(CategoryVnWardSeeder::class);
+        $this->call(StoreSeeder::class);
     }
 }

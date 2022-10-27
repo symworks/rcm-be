@@ -13,17 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('category_vn_districts', function (Blueprint $table) {
             $table->id();
+            $table->string('code')->unique();
             $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password')->nullable();
-            $table->rememberToken()->nullable();
             $table->timestamps();
-            $table->boolean('anonymous_user');
 
-            $table->string('avatar');
+            $table->unsignedBigInteger('category_vn_province_id');
+
+            $table->foreign('category_vn_province_id')->references('id')->on('category_vn_provinces')->onDelete('cascade');
         });
     }
 
@@ -34,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('category_vn_districts');
     }
 };

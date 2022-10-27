@@ -9,6 +9,10 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\CategoryProductTagController;
 use App\Http\Controllers\CategoryRoleController;
+use App\Http\Controllers\CategoryVnDistrictController;
+use App\Http\Controllers\CategoryVnProvinceController;
+use App\Http\Controllers\CategoryVnRegionsController;
+use App\Http\Controllers\CategoryVnWardController;
 use App\Http\Controllers\PriceRangeController;
 use App\Http\Controllers\ProductBrandController;
 use App\Http\Controllers\ProductColorController;
@@ -19,6 +23,7 @@ use App\Http\Controllers\ProductTagController;
 use App\Http\Controllers\ProductTypeController;
 use App\Http\Controllers\ProductVersionController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\StoreController;
 use App\Http\Controllers\UiController;
 use App\Models\CategoryCurrency;
 use App\Models\CategoryNation;
@@ -80,6 +85,8 @@ Route::get('/ui/rcm/product_list/{product_type_id}', [UiController::class, 'rcm_
 // Product
 Route::get('/product', [ProductController::class, 'index']);
 
+Route::get('/product/no_paginate', [ProductController::class, 'indexNoPaginate']);
+
 Route::get('/product/product_id/{id}', [ProductController::class, 'productById']);
 
 Route::get('/product/product_type_id/{product_type_id}', [ProductController::class, 'productByProductTypeId']);
@@ -109,6 +116,29 @@ Route::get('/product_color_qty/with_name', [ProductColorQtyController::class, 'i
 Route::get('/product_evaluate', [ProductEvaluateController::class, 'index']);
 
 Route::get('/product_evaluate/with_created_user', [ProductEvaluateController::class, 'indexWithCreatedUser']);
+
+Route::post('/product_evaluate', [ProductEvaluateController::class, 'anonymousStore']);
+
+// Category Vn Region
+Route::get('/category_vn_region', [CategoryVnRegionsController::class, 'index']);
+
+Route::get('/category_vn_region/select', [CategoryVnRegionsController::class, 'indexNoPaginate']);
+
+// Cateogory Vn Province
+Route::get('/category_vn_province', [CategoryVnProvinceController::class, 'index']);
+
+Route::get('/category_vn_province/select', [CategoryVnProvinceController::class, 'indexNoPaginate']);
+
+// Category Vn District
+Route::get('/category_vn_district', [CategoryVnDistrictController::class, 'index']);
+
+Route::get('/category_vn_district/select', [CategoryVnDistrictController::class, 'indexNoPaginate']);
+
+// Store
+Route::get('/store/select', [StoreController::class, 'indexNoPaginate']);
+
+// Category Vn Ward
+Route::get('/category_vn_ward', [CategoryVnWardController::class, 'index']);
 
 Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::get('/category_role', [CategoryRoleController::class, 'index']);

@@ -7,16 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class ProductEvaluate extends Model
+class CategoryVnProvince extends Model
 {
     use HasFactory, Notifiable, HasApiTokens;
 
     protected $fillable = [
-        'name',
-        'email',
-        'content',
-        'rate_value',
-        'product_id',
+
     ];
 
     protected $hidden = [
@@ -24,5 +20,6 @@ class ProductEvaluate extends Model
     ];
 
     protected $casts = [
+
     ];
 }

@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('product_evaluates', function (Blueprint $table) {
             $table->id();
-            $table->integer('num_star');
+            $table->integer('rate_value');
             $table->mediumText('content');
             $table->timestamps();
 
