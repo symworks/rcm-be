@@ -18,6 +18,8 @@ class CategoryProductTagFactory extends Factory
     {
         return [
             //
+            'code' => fake()->name(),
+            'name' => fake()->name(),
         ];
     }
 }

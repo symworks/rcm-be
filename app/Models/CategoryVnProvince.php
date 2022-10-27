@@ -12,14 +12,8 @@ class CategoryVnProvince extends Model
     use HasFactory, Notifiable, HasApiTokens;
 
     protected $fillable = [
-
-    ];
-
-    protected $hidden = [
-
-    ];
-
-    protected $casts = [
-
+        'id',
+        'code',
+        'name',
     ];
 }

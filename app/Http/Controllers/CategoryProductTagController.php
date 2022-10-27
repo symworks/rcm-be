@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCategoryProductTagRequest;
 use App\Http\Requests\UpdateCategoryProductTagRequest;
 use App\Models\CategoryProductTag;
+use Illuminate\Http\Request;
 
 class CategoryProductTagController extends Controller
 {
@@ -13,13 +14,39 @@ class CategoryProductTagController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
+        $perPage = 15;
+        if ($request->has('per_page')) {
+            $perPage = $request->per_page;
+        }
+
+        $results = [];
+
+        $queryBuilder = CategoryProductTag::select('*');
+        if ($request->has('match_col') && $request->has('match_key')) {
+            $queryBuilder = $queryBuilder->where($request->match_col, $request->match_key);
+        }
+
+        if ($request->has('find_col') && $request->has('find_key')) {
+            $queryBuilder = $queryBuilder->where($request->find_col, 'like', '%'.$request->find_key.'%');
+        }
+
+        if ($request->has('order_col') && $request->has('order_key')) {
+            $queryBuilder = $queryBuilder->orderBy($request->order_col, $request->order_key);
+        }
+
+        if (!$request->has('use_paginate') || $request->use_paginate == 'true') {
+            $results = $queryBuilder->paginate($perPage);
+        } else {
+            $results = $queryBuilder->get();
+        }
+
         return [
             'error_code' => 200,
             'msg' => 'Successfully',
-            'payload' => CategoryProductTag::paginate(15),
+            'payload' => $results,
         ];
     }
 
@@ -42,26 +69,25 @@ class CategoryProductTagController extends Controller
     public function store(StoreCategoryProductTagRequest $request)
     {
         //
-        $request->validate(
-            [
-                'code' => ['required','string','max:255'],
-                'name' => ['required','string','max:255'],
-            ]
-        );
+        $request->validate([
+            'code' => ['required','string','max:255'],
+            'name' => ['required','string','max:255'],
+        ]);
 
         $categoryProductTag = new CategoryProductTag();
-        $categoryProductTag->fill($request->all());
+        $categoryProductTag->code = $request->code;
+        $categoryProductTag->name = $request->name;
+
+        $categoryProductTag->created_by_id = $request->user()->id;
         $categoryProductTag->save();
 
-        return response()->json(
-            [
-                'error_code' => 200,
-                'msg' => 'Successfully',
-                'payload' => [
-                    'insertedId' => $categoryProductTag->id,
-                ]
+        return [
+            'error_code' => 200,
+            'msg' => 'Successfully',
+            'payload' => [
+                'insertedId' => $categoryProductTag->id,
             ]
-        );
+        ];
     }
 
     /**
@@ -93,20 +119,23 @@ class CategoryProductTagController extends Controller
      * @param  \App\Models\CategoryProductTag  $categoryProductTag
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateCategoryProductTagRequest $request, $id)
+    public function update(UpdateCategoryProductTagRequest $request)
     {
         //
         $request->validate(
             [
-                'code' => ['required','string','max:255'],
-                'name' => ['required','string','max:255'],
+                'id' => ['required', 'numeric'],
+                'code' => ['required', 'string', 'max:255'],
+                'name' => ['required', 'string', 'max:255'],
             ]
         );
 
-        $categoryProductTag = new CategoryProductTag();
-        $categoryProductTag->fill($request->all());
-
-        $affected = CategoryProductTag::where('id', $id)->update($categoryProductTag->totallyGuarded());
+        $affected = CategoryProductTag::where('id', $request->id)
+        ->update([
+            'code' => $request->code,
+            'name' => $request->name,
+            'updated_by_id' => $request->user()->id,
+        ]);
 
         return response()->json(
             [
@@ -130,24 +159,19 @@ class CategoryProductTagController extends Controller
         //
         $categoryProductTag = CategoryProductTag::find($id);
         if (!$categoryProductTag) {
-            return response()->json(
-                [
-                    'error_code' => 400,
-                    'msg' => 'Invalid Category Product Tag ID',
-                    'payload' => null,
-                ]
-            );
+            return [
+                'error_code' => 400,
+                'msg' => 'Category role not found',
+            ];
         }
 
         $affected = $categoryProductTag->delete();
-        return response()->json(
-            [
-                'error_code' => 200,
-                'msg' => 'Successfully',
-                'payload' => [
-                    'deletedId' => $affected,
-                ]
+        return [
+            'error_code' => 200,
+            'msg' => 'Successfully',
+            'payload' => [
+                'affected' => $affected,
             ]
-        );
+        ];
     }
 }

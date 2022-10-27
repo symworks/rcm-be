@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreCategoryVnProvinceRequest;
-use App\Http\Requests\UpdateCategoryVnProvinceRequest;
 use App\Models\CategoryVnProvince;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CategoryVnProvinceController extends Controller
 {
@@ -22,19 +21,37 @@ class CategoryVnProvinceController extends Controller
             $perPage = $request->per_page;
         }
 
-        return [
-            'error_code' => 200,
-            'msg' => 'Successfully',
-            'payload' => CategoryVnProvince::paginate($perPage),
-        ];
-    }
+        $results = [];
 
-    public function indexNoPaginate()
-    {
+        $queryBuilder = DB::table('category_vn_provinces');
+        if ($request->has('fields')) {
+            $queryBuilder = $queryBuilder->select($request->fields);
+        } else {
+            $queryBuilder = $queryBuilder->select('*');
+        }
+
+        if ($request->has('match_col') && $request->has('match_key')) {
+            $queryBuilder = $queryBuilder->where($request->match_col, $request->match_key);
+        }
+
+        if ($request->has('find_col') && $request->has('find_key')) {
+            $queryBuilder = $queryBuilder->where($request->find_col, 'like', '%'.$request->find_key.'%');
+        }
+
+        if ($request->has('order_col') && $request->has('order_key')) {
+            $queryBuilder = $queryBuilder->orderBy($request->order_col, $request->order_key);
+        }
+
+        if (!$request->has('use_paginate') || $request->use_paginate == 'true') {
+            $results = $queryBuilder->paginate($perPage);
+        } else {
+            $results = $queryBuilder->get();
+        }
+
         return [
             'error_code' => 200,
             'msg' => 'Successfully',
-            'payload' => CategoryVnProvince::select('id as value', 'name as label')->get(),
+            'payload' => $results,
         ];
     }
 
@@ -54,9 +71,28 @@ class CategoryVnProvinceController extends Controller
      * @param  \App\Http\Requests\StoreCategoryVnProvinceRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreCategoryVnProvinceRequest $request)
+    public function store(Request $request)
     {
         //
+        $request->validate([
+            'code' => ['required','string','max:255'],
+            'name' => ['required','string','max:255'],
+        ]);
+
+        $categoryVnProvince = new CategoryVnProvince();
+        $categoryVnProvince->code = $request->code;
+        $categoryVnProvince->name = $request->name;
+
+        $categoryVnProvince->created_by_id = $request->user()->id;
+        $categoryVnProvince->save();
+
+        return [
+            'error_code' => 200,
+            'msg' => 'Successfully',
+            'payload' => [
+                'insertedId' => $categoryVnProvince->id,
+            ]
+        ];
     }
 
     /**
@@ -88,9 +124,33 @@ class CategoryVnProvinceController extends Controller
      * @param  \App\Models\CategoryVnProvince  $categoryVnProvince
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateCategoryVnProvinceRequest $request, CategoryVnProvince $categoryVnProvince)
+    public function update(Request $request, CategoryVnProvince $categoryVnProvince)
     {
         //
+        $request->validate(
+            [
+                'id' => ['required', 'numeric'],
+                'code' => ['required', 'string', 'max:255'],
+                'name' => ['required', 'string', 'max:255'],
+            ]
+        );
+
+        $affected = CategoryVnProvince::where('id', $request->id)
+        ->update([
+            'code' => $request->code,
+            'name' => $request->name,
+            'updated_by_id' => $request->user()->id,
+        ]);
+
+        return response()->json(
+            [
+                'error_code' => 200,
+                'msg' => 'Successfully',
+                'payload' => [
+                    'updatedCount' => $affected
+                ]
+            ]
+        );
     }
 
     /**
@@ -99,8 +159,24 @@ class CategoryVnProvinceController extends Controller
      * @param  \App\Models\CategoryVnProvince  $categoryVnProvince
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CategoryVnProvince $categoryVnProvince)
+    public function destroy($id)
     {
         //
+        $categoryVnProvince = CategoryVnProvince::find($id);
+        if (!$categoryVnProvince) {
+            return [
+                'error_code' => 400,
+                'msg' => 'Category province not found',
+            ];
+        }
+
+        $affected = $categoryVnProvince->delete();
+        return [
+            'error_code' => 200,
+            'msg' => 'Successfully',
+            'payload' => [
+                'affected' => $affected,
+            ]
+        ];
     }
 }

@@ -12,14 +12,9 @@ class CategoryVnDistrict extends Model
     use HasFactory, Notifiable, HasApiTokens;
 
     protected $fillable = [
-
-    ];
-
-    protected $hidden = [
-
-    ];
-
-    protected $casts = [
-
+        'id',
+        'code',
+        'name',
+        'category_vn_province_id',
     ];
 }

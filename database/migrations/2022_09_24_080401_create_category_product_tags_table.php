@@ -18,6 +18,12 @@ return new class extends Migration
             $table->string('code');
             $table->string('name');
             $table->timestamps();
+
+            $table->unsignedBigInteger('created_by_id')->nullable();
+            $table->unsignedBigInteger('updated_by_id')->nullable();
+
+            $table->foreign('created_by_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('updated_by_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

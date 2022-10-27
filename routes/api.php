@@ -11,7 +11,6 @@ use App\Http\Controllers\CategoryProductTagController;
 use App\Http\Controllers\CategoryRoleController;
 use App\Http\Controllers\CategoryVnDistrictController;
 use App\Http\Controllers\CategoryVnProvinceController;
-use App\Http\Controllers\CategoryVnRegionsController;
 use App\Http\Controllers\CategoryVnWardController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PriceRangeController;
@@ -27,6 +26,7 @@ use App\Http\Controllers\ProductTypeController;
 use App\Http\Controllers\ProductVersionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StoreController;
+use App\Http\Controllers\UserController;
 use App\Models\CategoryCurrency;
 use App\Models\CategoryNation;
 use Illuminate\Http\Request;
@@ -42,21 +42,6 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::get('/user', function (Request $request) {
-    if ($request->user()) {
-        return response()->json([
-            'error_code' => 200,
-            'msg' => 'Successfully',
-            'payload' => $request->user(),
-        ]);
-    }
-
-    return response()->json([
-        'error_code' => 404,
-        'msg' => 'No such user exists',
-    ]);
-});
 
 Route::post('/register', [RegisteredUserController::class, 'store'])
     ->middleware('guest')
@@ -103,6 +88,69 @@ Route::patch('/category_role', [CategoryRoleController::class, 'update'])
 Route::delete('/category_role/{id}', [CategoryRoleController::class, 'destroy'])
     ->middleware('role:Admin');
 
+// CategoryProductTag
+Route::get('/category_product_tag', [CategoryProductTagController::class, 'index']);
+
+Route::post('/category_product_tag', [CategoryProductTagController::class, 'store'])
+    ->middleware('role:Admin');
+
+Route::patch('/category_product_tag', [CategoryProductTagController::class, 'update'])
+    ->middleware('role:Admin');
+
+Route::delete('/category_product_tag/{id}', [CategoryProductTagController::class, 'destroy'])
+    ->middleware('role:Admin');
+    
+// Cateogory Vn Province
+Route::get('/category_vn_province', [CategoryVnProvinceController::class, 'index']);
+
+Route::post('/category_vn_province', [CategoryVnProvinceController::class, 'store'])
+    ->middleware('role:Admin');
+
+Route::patch('/category_vn_province', [CategoryVnProvinceController::class, 'update'])
+    ->middleware('role:Admin');
+
+Route::delete('/category_vn_province/{id}', [CategoryVnProvinceController::class, 'destroy'])
+    ->middleware('role:Admin');
+
+// Category Vn District
+Route::get('/category_vn_district', [CategoryVnDistrictController::class, 'index']);
+
+Route::post('/category_vn_district', [CategoryVnDistrictController::class, 'store'])
+    ->middleware('role:Admin');
+
+Route::patch('/category_vn_district', [CategoryVnDistrictController::class, 'update'])
+    ->middleware('role:Admin');
+
+Route::delete('/category_vn_district/{id}', [CategoryVnDistrictController::class, 'destroy'])
+    ->middleware('role:Admin');
+
+// Category Vn Ward
+Route::get('/category_vn_ward', [CategoryVnWardController::class, 'index']);
+
+Route::post('/category_vn_ward', [CategoryVnWardController::class, 'store'])
+    ->middleware('role:Admin');
+
+Route::patch('/category_vn_district', [CategoryVnWardController::class, 'update'])
+    ->middleware('role:Admin');
+
+Route::delete('/category_vndistrict/{id}', [CategoryVnWardController::class, 'destroy'])
+    ->middleware('role:Admin');
+
+// User
+Route::get('/user', [UserController::class, 'index'])
+    ->middleware('role:Standard');
+
+Route::get('/user/self', [UserController::class, 'selfUser']);
+
+Route::post('/user', [UserController::class, 'store'])
+    ->middleware('role:Admin');
+
+Route::patch('/user', [UserController::class, 'update'])
+    ->middleware('role:Admin');
+
+Route::delete('/user/{id}', [UserController::class, 'destroy'])
+    ->middleware('role:Admin');
+
 // Product
 Route::get('/product', [ProductController::class, 'index']);
 
@@ -147,26 +195,8 @@ Route::get('/product_evaluate/with_created_user', [ProductEvaluateController::cl
 
 Route::post('/product_evaluate', [ProductEvaluateController::class, 'anonymousStore']);
 
-// Category Vn Region
-Route::get('/category_vn_region', [CategoryVnRegionsController::class, 'index']);
-
-Route::get('/category_vn_region/select', [CategoryVnRegionsController::class, 'indexNoPaginate']);
-
-// Cateogory Vn Province
-Route::get('/category_vn_province', [CategoryVnProvinceController::class, 'index']);
-
-Route::get('/category_vn_province/select', [CategoryVnProvinceController::class, 'indexNoPaginate']);
-
-// Category Vn District
-Route::get('/category_vn_district', [CategoryVnDistrictController::class, 'index']);
-
-Route::get('/category_vn_district/select', [CategoryVnDistrictController::class, 'indexNoPaginate']);
-
 // Store
 Route::get('/store/select', [StoreController::class, 'indexNoPaginate']);
-
-// Category Vn Ward
-Route::get('/category_vn_ward', [CategoryVnWardController::class, 'index']);
 
 // Product Order
 Route::get('/product_order', [ProductOrderController::class, 'index']);
@@ -230,17 +260,6 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         ->middleware('role:Admin');
 
     Route::delete('/product/{id}', [ProductController::class, 'destroy'])
-        ->middleware('role:Admin');
-
-    Route::get('/category_product_tag', [CategoryProductTagController::class, 'index']);
-
-    Route::post('/category_product_tag', [CategoryProductTagController::class, 'store'])
-        ->middleware('role:Admin');
-
-    Route::patch('/category_product_tag/{id}', [CategoryProductTagController::class, 'update'])
-        ->middleware('role:Admin');
-    
-    Route::delete('category_product_tag/{id}', [CategoryProductTagController::class, 'delete'])
         ->middleware('role:Admin');
 
     Route::get('/product_tag/{product_id}', [ProductTagController::class, 'index']);

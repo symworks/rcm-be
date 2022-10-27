@@ -19,7 +19,6 @@ class UserFactory extends Factory
      */
     public function definition()
     {
-        $categoryRoleIds = CategoryRole::pluck('id')->toArray();
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
@@ -28,7 +27,7 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
             'avatar' => fake()->imageUrl(200, 200),
             'anonymous_user' => fake()->boolean(),
-            'category_role_id' => fake()->randomElement($categoryRoleIds),
+            'status' => fake()->numberBetween(0, 2),
         ];
     }
 

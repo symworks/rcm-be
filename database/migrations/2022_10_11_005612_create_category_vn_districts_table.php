@@ -19,9 +19,13 @@ return new class extends Migration
             $table->string('name');
             $table->timestamps();
 
-            $table->unsignedBigInteger('category_vn_province_id');
+            $table->unsignedBigInteger('category_vn_province_id')->nullable();
+            $table->unsignedBigInteger('created_by_id')->nullable();
+            $table->unsignedBigInteger('updated_by_id')->nullable();
 
             $table->foreign('category_vn_province_id')->references('id')->on('category_vn_provinces')->onDelete('cascade');
+            $table->foreign('created_by_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('updated_by_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

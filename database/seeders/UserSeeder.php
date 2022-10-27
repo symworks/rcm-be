@@ -23,7 +23,7 @@ class UserSeeder extends Seeder
         $supperUser->password = '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi';
         $supperUser->avatar = 'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200';
         $supperUser->anonymous_user = false;
-        $supperUser->category_role_id = 1;
+        $supperUser->status = 0; //Active.
         $supperUser->save();
 
         User::factory()->count(50)->create();

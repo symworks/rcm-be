@@ -20,13 +20,13 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
             $table->rememberToken()->nullable();
-            $table->timestamps();
             $table->boolean('anonymous_user');
+            $table->boolean('status');
             $table->string('avatar');
+            $table->timestamps();
 
-            $table->unsignedBigInteger('category_role_id')->nullable();
-
-            $table->foreign('category_role_id')->references('id')->on('category_roles')->onDelete('cascade');
+            $table->unsignedBigInteger('created_by_id')->nullable();
+            $table->unsignedBigInteger('updated_by_id')->nullable();
         });
     }
 

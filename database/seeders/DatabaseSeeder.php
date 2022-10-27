@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
         $this->call(CategoryNationSeeder::class);
         $this->call(CategoryCurrencySeeder::class);
         $this->call(CategoryRoleSeeder::class);
+        $this->call(CategoryProductTagSeeder::class);
         $this->call(PaymentMethodSeeder::class);
         $this->call(UserSeeder::class);
         $this->call(ProductTypeSeeder::class);

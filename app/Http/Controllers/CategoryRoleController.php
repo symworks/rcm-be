@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCategoryRoleRequest;
 use App\Http\Requests\UpdateCategoryRoleRequest;
 use App\Models\CategoryRole;
+use Exception;
 use Illuminate\Http\Request;
 
 /**
@@ -72,13 +73,11 @@ class CategoryRoleController extends Controller
             $results = $queryBuilder->get();
         }
 
-        return response()->json(
-            [
-                'error_code' => 200,
-                'msg' => 'Successfully',
-                'payload' => $results,
-            ]
-        );
+        return [
+            'error_code' => 200,
+            'msg' => 'Successfully',
+            'payload' => $results,
+        ];
     }
 
     /**
@@ -151,20 +150,28 @@ class CategoryRoleController extends Controller
      * @param  \App\Models\CategoryRole  $categoryRole
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         //
         $request->validate([
+            'id' => ['required', 'numeric'],
             'code' => ['required', 'string', 'max:255'],
             'name' => ['required', 'string', 'max:255'],
         ]);
 
-        $affected = CategoryRole::where('id', $id)
-        ->where('is_system_role', false)
-        ->update([
-            'code' => $request->code,
-            'name' => $request->name,
-        ]);
+        try {
+            $affected = CategoryRole::where('id', $request->id)
+            ->where('is_system_role', false)
+            ->update([
+                'code' => $request->code,
+                'name' => $request->name,
+            ]);
+        } catch (Exception $ex) {
+            return [
+                'error_code' => 200,
+                'msg' => 'Cannot update system role',
+            ];
+        }
 
         return [
             'error_code' => 200,
@@ -189,6 +196,13 @@ class CategoryRoleController extends Controller
             return [
                 'error_code' => 400,
                 'msg' => 'Category role not found',
+            ];
+        }
+
+        if ($categoryRole->is_system_role) {
+            return [
+                'error_code' => 400,
+                'msg' => 'Cannot delete system role'
             ];
         }
 
