@@ -22,18 +22,31 @@ class ProductTypeController extends Controller
             $perPage = $request->per_page;
         }
 
-        $productTypes = [];
+        $results = [];
 
-        if (!$request->has('is_active')) {
-            $productTypes = ProductType::paginate($perPage);
+        $queryBuilder = ProductType::select('*');
+        if ($request->has('is_active')) {
+            $queryBuilder = $queryBuilder->where('is_active', $request->is_active);
+        }
+
+        if ($request->has('find_col') && $request->has('find_key')) {
+            $queryBuilder = $queryBuilder->where($request->find_col, 'like', '%'.$request->find_key.'%');
+        }
+
+        if ($request->has('order_col') && $request->has('order_key')) {
+            $queryBuilder = $queryBuilder->orderBy($request->order_col, $request->order_key);
+        }
+
+        if (!$request->has('use_paginate') || $request->use_paginate == 'true') {
+            $results = $queryBuilder->paginate($perPage);
         } else {
-            $productTypes = ProductType::where('is_active', $request->is_active)->paginate($perPage);
+            $results = $queryBuilder->get();
         }
 
         return [
             'error_code' => 200,
             'msg' => 'Successfully',
-            'payload' => $productTypes,
+            'payload' => $results,
         ];
     }
 
@@ -53,9 +66,31 @@ class ProductTypeController extends Controller
      * @param  \App\Http\Requests\StoreProductTypeRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreProductTypeRequest $request)
+    public function store(Request $request)
     {
         //
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'ui_icon' => ['required', 'string', 'max:255'],
+            'is_active' => ['required', 'boolean'],
+        ]);
+
+        $productType = new ProductType();
+        $productType->name = $request->name;
+        $productType->ui_icon = $request->ui_icon;
+        $productType->is_active = $request->is_active;
+
+        $productType->created_by_id = $request->user()->id;
+
+        $productType->save();
+
+        return [
+            'error_code' => 200,
+            'msg' => 'Successfully',
+            'payload' => [
+                'insertedId' => $productType->id,
+            ]
+        ];
     }
 
     /**
@@ -87,9 +122,31 @@ class ProductTypeController extends Controller
      * @param  \App\Models\ProductType  $productType
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateProductTypeRequest $request, ProductType $productType)
+    public function update(Request $request, ProductType $productType)
     {
         //
+        $request->validate([
+            'id' => ['required', 'numeric'],
+            'name' => ['required', 'string', 'max:255'],
+            'ui_icon' => ['required', 'string', 'max:255'],
+            'is_active' => ['required', 'boolean'],
+        ]);
+
+        $affected = ProductType::where('id', $request->id)
+        ->update([
+            'name' => $request->name,
+            'ui_icon' => $request->ui_icon,
+            'is_active' => $request->is_active,
+            'updated_by_id' => $request->user()->id,
+        ]);
+
+        return [
+            'error_code' => 200,
+            'msg' => 'Successfully',
+            'payload' => [
+                'updatedCount' => $affected,
+            ],
+        ];
     }
 
     /**
@@ -98,8 +155,24 @@ class ProductTypeController extends Controller
      * @param  \App\Models\ProductType  $productType
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ProductType $productType)
+    public function destroy($id)
     {
         //
+        $productType = ProductType::find($id);
+        if (!$productType) {
+            return [
+                'error_code' => 400,
+                'msg' => 'Product type not found',
+            ];
+        }
+
+        $affected = $productType->delete();
+        return [
+            'error_code' => 200,
+            'msg' => 'Successfully',
+            'payload' => [
+                'affected' => $affected,
+            ]
+        ];
     }
 }

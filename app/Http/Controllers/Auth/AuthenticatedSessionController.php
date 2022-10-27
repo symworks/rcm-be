@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,11 +18,21 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
-        $request->authenticate();
+        $result = $request->authenticate();
+        if ($result) {
+            return response()->json([
+                'error_code' => 400,
+                'msg' => $result,
+            ]);
+        }
 
         $request->session()->regenerate();
 
-        return response()->noContent();
+        return response()->json([
+            'error_code' => 200,
+            'msg' => 'Successfully',
+            'payload' => $request->user(),
+        ]);
     }
 
     /**
@@ -38,6 +49,9 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return response()->noContent();
+        return response()->json([
+            'error_code' => 200,
+            'msg' => 'Successfully',
+        ]);
     }
 }

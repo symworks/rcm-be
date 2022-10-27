@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCategoryRoleRequest;
 use App\Http\Requests\UpdateCategoryRoleRequest;
 use App\Models\CategoryRole;
+use Illuminate\Http\Request;
 
 /**
  * @OA\Info(
@@ -42,14 +43,40 @@ class CategoryRoleController extends Controller
      *
      * Returns list of category roles
      */
-    public function index()
+    public function index(Request $request)
     {
         //
+        $perPage = 15;
+        if ($request->has('per_page')) {
+            $perPage = $request->per_page;
+        }
+
+        $results = [];
+
+        $queryBuilder = CategoryRole::select('*');
+        if ($request->has('match_col') && $request->has('match_key')) {
+            $queryBuilder = $queryBuilder->where($request->match_col, $request->match_key);
+        }
+
+        if ($request->has('find_col') && $request->has('find_key')) {
+            $queryBuilder = $queryBuilder->where($request->find_col, 'like', '%'.$request->find_key.'%');
+        }
+
+        if ($request->has('order_col') && $request->has('order_key')) {
+            $queryBuilder = $queryBuilder->orderBy($request->order_col, $request->order_key);
+        }
+
+        if (!$request->has('use_paginate') || $request->use_paginate == 'true') {
+            $results = $queryBuilder->paginate($perPage);
+        } else {
+            $results = $queryBuilder->get();
+        }
+
         return response()->json(
             [
                 'error_code' => 200,
                 'msg' => 'Successfully',
-                'payload' => CategoryRole::paginate(15),
+                'payload' => $results,
             ]
         );
     }
@@ -70,7 +97,7 @@ class CategoryRoleController extends Controller
      * @param  \App\Http\Requests\StoreCategoryRoleRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreCategoryRoleRequest $request)
+    public function store(Request $request)
     {
         //
         $request->validate([
@@ -78,19 +105,21 @@ class CategoryRoleController extends Controller
             'name' => ['required', 'string', 'max:255'],
         ]);
 
-        $categoryRole = new CategoryRole($request->all());
+        $categoryRole = new CategoryRole();
+        $categoryRole->code = $request->code;
+        $categoryRole->name = $request->name;
+
         $categoryRole->is_system_role = false;
+
         $categoryRole->save();
 
-        return response()->json(
-            [
-                'error_code' => 200,
-                'msg' => 'Successfully',
-                'payload' => [
-                    'insertedId' => $categoryRole->id,
-                ]
+        return [
+            'error_code' => 200,
+            'msg' => 'Successfully',
+            'payload' => [
+                'insertedId' => $categoryRole->id,
             ]
-        );
+        ];
     }
 
     /**
@@ -122,7 +151,7 @@ class CategoryRoleController extends Controller
      * @param  \App\Models\CategoryRole  $categoryRole
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateCategoryRoleRequest $request, $id)
+    public function update(Request $request, $id)
     {
         //
         $request->validate([
@@ -130,20 +159,20 @@ class CategoryRoleController extends Controller
             'name' => ['required', 'string', 'max:255'],
         ]);
 
-        $categoryRole = new CategoryRole();
-        $categoryRole->fill($request->all());
+        $affected = CategoryRole::where('id', $id)
+        ->where('is_system_role', false)
+        ->update([
+            'code' => $request->code,
+            'name' => $request->name,
+        ]);
 
-        $affected = CategoryRole::where('id', $id)->where('is_system_role', false)->update($categoryRole->toArray());
-
-        return response()->json(
-            [
-                'error_code' => 200,
-                'msg' => 'Successfully',
-                'payload' => [
-                    'updatedCount' => $affected,
-                ]
+        return [
+            'error_code' => 200,
+            'msg' => 'Successfully',
+            'payload' => [
+                'updatedCount' => $affected,
             ]
-        );
+        ];
     }
 
     /**
@@ -155,36 +184,21 @@ class CategoryRoleController extends Controller
     public function destroy($id)
     {
         //
-        $existCategoryRole = CategoryRole::find($id);
-        if (!$existCategoryRole) {
-            return response()->json(
-                [
-                    'error_code' => 400,
-                    'msg' => 'Invalid category role id id provided',
-                    'payload' => null,
-                ]
-            );
+        $categoryRole = CategoryRole::find($id);
+        if (!$categoryRole) {
+            return [
+                'error_code' => 400,
+                'msg' => 'Category role not found',
+            ];
         }
 
-        if ($existCategoryRole->is_system_role) {
-            return response()->json(
-                [
-                    'error_code' => 400,
-                    'msg' => 'Could not delete system data',
-                    'payload' => null,
-                ]
-            );
-        }
-
-        $existCategoryRole->delete();
-        return response()->json(
-            [
-                'error_code' => 200,
-                'msg' => 'Successfully',
-                'payload' => [
-                    'deletedId' => $existCategoryRole->id,
-                ]
+        $affected = $categoryRole->delete();
+        return [
+            'error_code' => 200,
+            'msg' => 'Successfully',
+            'payload' => [
+                'affected' => $affected,
             ]
-        );
+        ];
     }
 }

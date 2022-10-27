@@ -27,7 +27,6 @@ use App\Http\Controllers\ProductTypeController;
 use App\Http\Controllers\ProductVersionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StoreController;
-use App\Http\Controllers\UiController;
 use App\Models\CategoryCurrency;
 use App\Models\CategoryNation;
 use Illuminate\Http\Request;
@@ -44,8 +43,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    return $request->user();
+Route::get('/user', function (Request $request) {
+    if ($request->user()) {
+        return response()->json([
+            'error_code' => 200,
+            'msg' => 'Successfully',
+            'payload' => $request->user(),
+        ]);
+    }
+
+    return response()->json([
+        'error_code' => 404,
+        'msg' => 'No such user exists',
+    ]);
 });
 
 Route::post('/register', [RegisteredUserController::class, 'store'])
@@ -80,22 +90,43 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->middleware('auth')
     ->name('logout');
 
-// Ui
-Route::get('/ui/rcm/category_menu/{product_id}', [UiController::class, 'rcm_category_menu']);
+// CategoryRole
+Route::get('/category_role', [CategoryRoleController::class, 'index'])
+    ->middleware('role:Admin');
 
-Route::get('/ui/rcm/product_list/{product_type_id}', [UiController::class, 'rcm_product_list']);
+Route::post('/category_role', [CategoryRoleController::class, 'store'])
+    ->middleware('role:Admin');
+
+Route::patch('/category_role', [CategoryRoleController::class, 'update'])
+    ->middleware('role:Admin');
+
+Route::delete('/category_role/{id}', [CategoryRoleController::class, 'destroy'])
+    ->middleware('role:Admin');
 
 // Product
 Route::get('/product', [ProductController::class, 'index']);
 
+// Product Type
 Route::get('/product_type', [ProductTypeController::class, 'index']);
 
+Route::post('/product_type', [ProductTypeController::class, 'store'])
+    ->middleware('role:Admin');
+
+Route::patch('/product_type', [ProductTypeController::class, 'update'])
+    ->middleware('role:Admin');
+
+Route::delete('/product_type/{id}', [ProductTypeController::class, 'destroy'])
+    ->middleware('role:Admin');
+
+// Product Brand
 Route::get('/product_brand/product_id/{product_id}', [ProductBrandController::class, 'indexByProductId']);
 
 Route::get('/product_brand/product_name/{product_name}', [ProductBrandController::class, 'indexByProductName']);
 
+// Price Range
 Route::get('/price_range/{product_id}', [PriceRangeController::class, 'index']);
 
+// Ads campaign
 Route::get('/ads_campaign', [AdsCampaignController::class, 'index']);
 
 // Product version
@@ -150,17 +181,6 @@ Route::post('/product_order_detail', [ProductOrderDetailController::class, 'stor
 Route::get('/payment_method', [PaymentMethodController::class, 'index']);
 
 Route::group(['middleware' => ['auth:sanctum']], function() {
-    Route::get('/category_role', [CategoryRoleController::class, 'index']);
-
-    Route::post('/category_role', [CategoryRoleController::class, 'store'])
-        ->middleware('role:SupperUser');
-
-    Route::patch('/category_role/{id}', [CategoryRoleController::class, 'update'])
-        ->middleware('role:SupperUser');
-
-    Route::delete('/category_role/{id}', [CategoryRoleController::class, 'destroy'])
-        ->middleware('role:SupperUser');
-
     Route::get('/role/{user_id}', [RoleController::class, 'index']);
 
     Route::patch('/role/{id}', [RoleController::class, 'update'])
@@ -232,7 +252,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         ->middleware('role:Admin');
 
     Route::delete('/product_tag/{id}', [ProductTagController::class, 'delete'])
-        ->middleware('auth:Admin');
+        ->middleware('role:Admin');
 
     Route::post('/price_range', [PriceRangeController::class, 'store'])
         ->middleware('role:Admin');

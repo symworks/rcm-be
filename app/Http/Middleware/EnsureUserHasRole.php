@@ -27,6 +27,13 @@ class EnsureUserHasRole
      */
     public function handle(Request $request, Closure $next, $role)
     {
+        if (!$request->user()) {
+            return response()->json([
+                'error_code' => '400',
+                'msg' => 'Unauthenticated user',
+            ]);
+        }
+
         $roles = $request->user()->roles;
         if ($this->hasRole($roles, 'SupperUser')) {
             return $next($request);

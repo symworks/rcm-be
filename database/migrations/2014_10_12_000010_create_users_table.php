@@ -22,8 +22,11 @@ return new class extends Migration
             $table->rememberToken()->nullable();
             $table->timestamps();
             $table->boolean('anonymous_user');
-
             $table->string('avatar');
+
+            $table->unsignedBigInteger('category_role_id')->nullable();
+
+            $table->foreign('category_role_id')->references('id')->on('category_roles')->onDelete('cascade');
         });
     }
 
