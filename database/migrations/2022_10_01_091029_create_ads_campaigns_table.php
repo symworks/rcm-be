@@ -18,9 +18,15 @@ return new class extends Migration
             $table->string('title');
             $table->string('original');
             $table->string('thumbnail');
-            $table->string('link_to_campaign');
+            $table->string('link_to_campaign')->nullable();
             $table->boolean('is_active');
             $table->timestamps();
+
+            $table->unsignedBigInteger('created_by_id')->nullable();
+            $table->unsignedBigInteger('updated_by_id')->nullable();
+
+            $table->foreign('created_by_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('updated_by_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

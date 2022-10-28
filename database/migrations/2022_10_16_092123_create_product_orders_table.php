@@ -40,7 +40,9 @@ return new class extends Migration
             $table->string('customer_district_name')->nullable();
 
             $table->unsignedBigInteger('payment_method_id')->nullable();
+            $table->string('payment_method_name')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
+            $table->string('user_name')->nullable();
 
             $table->foreign('store_province_id')->references('id')->on('category_vn_provinces')->onDelete('cascade');
             $table->foreign('store_district_id')->references('id')->on('category_vn_districts')->onDelete('cascade');

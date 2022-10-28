@@ -124,7 +124,7 @@ class CategoryVnProvinceController extends Controller
      * @param  \App\Models\CategoryVnProvince  $categoryVnProvince
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, CategoryVnProvince $categoryVnProvince)
+    public function update(Request $request)
     {
         //
         $request->validate(

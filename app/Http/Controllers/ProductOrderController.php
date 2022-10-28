@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreProductOrderRequest;
-use App\Http\Requests\UpdateProductOrderRequest;
 use App\Models\ProductOrder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductOrderController extends Controller
 {
@@ -17,19 +16,34 @@ class ProductOrderController extends Controller
     public function index(Request $request)
     {
         //
+        
         $perPage = 15;
         if ($request->has('per_page')) {
             $perPage = $request->per_page;
         }
 
-        $queryBuilder = ProductOrder::select('*');
         $results = [];
 
-        if ($request->has('id')) {
-            $queryBuilder = $queryBuilder->where('id', $request->id);
+        $queryBuilder = DB::table('product_orders');
+        if ($request->has('fields')) {
+            $queryBuilder = $queryBuilder->select($request->fields);
+        } else {
+            $queryBuilder = $queryBuilder->select('*');
         }
 
-        if (!$request->has('use_paginate') || $request->use_paginate === 'true') {
+        if ($request->has('match_col') && $request->has('match_key')) {
+            $queryBuilder = $queryBuilder->where($request->match_col, $request->match_key);
+        }
+
+        if ($request->has('find_col') && $request->has('find_key')) {
+            $queryBuilder = $queryBuilder->where($request->find_col, 'like', '%'.$request->find_key.'%');
+        }
+
+        if ($request->has('order_col') && $request->has('order_key')) {
+            $queryBuilder = $queryBuilder->orderBy($request->order_col, $request->order_key);
+        }
+
+        if (!$request->has('use_paginate') || $request->use_paginate == 'true') {
             $results = $queryBuilder->paginate($perPage);
         } else {
             $results = $queryBuilder->get();
@@ -58,7 +72,7 @@ class ProductOrderController extends Controller
      * @param  \App\Http\Requests\StoreProductOrderRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreProductOrderRequest $request)
+    public function store(Request $request)
     {
         //
         $request->validate([
@@ -120,7 +134,7 @@ class ProductOrderController extends Controller
      * @param  \App\Models\ProductOrder  $productOrder
      * @return \Illuminate\Http\Response
      */
-    public function selectMethod(UpdateProductOrderRequest $request, ProductOrder $productOrder)
+    public function selectMethod(Request $request)
     {
         //
         $request->validate([
@@ -167,8 +181,24 @@ class ProductOrderController extends Controller
      * @param  \App\Models\ProductOrder  $productOrder
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ProductOrder $productOrder)
+    public function destroy($id)
     {
         //
+        $categoryVnProvince = ProductOrder::find($id);
+        if (!$categoryVnProvince) {
+            return [
+                'error_code' => 400,
+                'msg' => 'Category province not found',
+            ];
+        }
+
+        $affected = $categoryVnProvince->delete();
+        return [
+            'error_code' => 200,
+            'msg' => 'Successfully',
+            'payload' => [
+                'affected' => $affected,
+            ]
+        ];
     }
 }
