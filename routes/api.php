@@ -225,6 +225,30 @@ Route::patch('/product_version', [ProductVersionController::class, 'update'])
 
 Route::delete('/product_version/{id}', [ProductVersionController::class, 'destroy'])
     ->middleware('role:Admin');
+    
+// Product image
+Route::get('/product_image', [ProductImageController::class, 'index']);
+
+Route::post('/product_image', [ProductImageController::class, 'store'])
+    ->middleware('role:Admin');
+
+Route::patch('/product_image', [ProductImageController::class, 'update'])
+    ->middleware('role:Admin');
+
+Route::delete('/product_image/{id}', [ProductImageController::class, 'destroy'])
+    ->middleware('role:Admin');
+
+// Product color qty
+Route::get('/product_color_qty', [ProductColorQtyController::class, 'index']);
+
+Route::post('/product_color_qty', [ProductColorQtyController::class, 'store'])
+    ->middleware('role:Admin');
+
+Route::patch('/product_color_qty', [ProductColorQtyController::class, 'update'])
+    ->middleware('role:Admin');
+
+Route::delete('/product_color_qty/{id}', [ProductColorQtyController::class, 'destroy'])
+    ->middleware('role:Admin');
 
 // Product Brand
 Route::get('/product_brand/product_id/{product_id}', [ProductBrandController::class, 'indexByProductId']);
@@ -236,14 +260,6 @@ Route::get('/price_range/{product_id}', [PriceRangeController::class, 'index']);
 
 // Ads campaign
 Route::get('/ads_campaign', [AdsCampaignController::class, 'index']);
-
-// Product image
-Route::get('/product_image', [ProductImageController::class, 'index']);
-
-Route::get('/product_image/thumbnail', [ProductImageController::class, 'indexForThumbnail']);
-
-// Product color qty
-Route::get('/product_color_qty', [ProductColorQtyController::class, 'index']);
 
 // Product evaluate
 Route::get('/product_evaluate', [ProductEvaluateController::class, 'index']);

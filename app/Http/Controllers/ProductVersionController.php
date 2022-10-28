@@ -82,9 +82,6 @@ class ProductVersionController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'origin_price' => ['required', 'numeric'],
             'official_price' => ['required', 'numeric'],
-            'instock_qty' => ['required', 'numeric'],
-            'sold_qty' => ['required', 'numeric'],
-            'busy_qty' => ['required', 'numeric'],
             'product_id' => ['required', 'numeric'],
             'product_name' => ['required', 'string', 'max:255'],
             'product_type_id' => ['required', 'numeric'],
@@ -95,9 +92,6 @@ class ProductVersionController extends Controller
         $productVersion->name = $request->name;
         $productVersion->origin_price = $request->origin_price;
         $productVersion->official_price = $request->official_price;
-        $productVersion->instock_qty = $request->instock_qty;
-        $productVersion->sold_qty = $request->sold_qty;
-        $productVersion->busy_qty = $request->busy_qty;
         $productVersion->product_id = $request->product_id;
         $productVersion->product_name = $request->product_name;
         $productVersion->product_type_id = $request->product_type_id;
@@ -153,9 +147,6 @@ class ProductVersionController extends Controller
                 'name' => ['required', 'string', 'max:255'],
                 'origin_price' => ['required', 'numeric'],
                 'official_price' => ['required', 'numeric'],
-                'instock_qty' => ['required', 'numeric'],
-                'sold_qty' => ['required', 'numeric'],
-                'busy_qty' => ['required', 'numeric'],
                 'product_id' => ['required', 'numeric'],
                 'product_name' => ['required', 'string', 'max:255'],
                 'product_type_id' => ['required', 'numeric'],
@@ -168,9 +159,6 @@ class ProductVersionController extends Controller
             'name' => $request->name,
             'origin_price' => $request->origin_price,
             'official_price' => $request->official_price,
-            'instock_qty' => $request->instock_qty,
-            'sold_qty' => $request->sold_qty,
-            'busy_qty' => $request->busy_qty,
             'product_id' => $request->product_id,
             'product_name' => $request->product_name,
             'product_type_id' => $request->product_type_id,

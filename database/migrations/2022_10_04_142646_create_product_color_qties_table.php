@@ -22,6 +22,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unsignedBigInteger('product_version_id')->nullable();
+            $table->string('product_version_name')->nullable();
             $table->unsignedBigInteger('created_by_id')->nullable();
             $table->unsignedBigInteger('updated_by_id')->nullable();
 
