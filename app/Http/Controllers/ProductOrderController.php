@@ -86,10 +86,15 @@ class ProductOrderController extends Controller
             'is_call_other' => ['required', 'boolean'],
             'total_price' => ['required', 'numeric'],
             'store_province_id' => ['integer'],
+            'store_province_name' => ['string'],
             'store_district_id' => ['integer'],
+            'store_district_name' => ['string'],
             'store_address_id' => ['integer'],
+            'store_address_name' => ['string'],
             'customer_province_id' => ['integer'],
+            'customer_province_name' => ['string'],
             'customer_district_id' => ['integer'],
+            'customer_district_name' => ['string'],
             'user_id' => ['integer'],
         ]);
 
@@ -164,6 +169,70 @@ class ProductOrderController extends Controller
         ->update([
             'payment_method_id' => $request->payment_method_id,
             'status' => $status
+        ]);
+
+        return [
+            'error_code' => 200,
+            'msg' => 'Successfully',
+            'payload' => [
+                'updatedCount' => $affected,
+            ],
+        ];
+    }
+
+    public function update(Request $request)
+    {
+        //
+        $request->validate([
+            'id' => ['required', 'numeric'],
+            'name' => ['required', 'string'],
+            'phone_number' => ['required', 'string'],
+            'email' => ['required', 'string'],
+            'delivery_method' => ['required', 'boolean'],
+            'customer_address' => ['string'],
+            'other_request' => ['string', 'nullable'],
+            'is_invoice' => ['required', 'boolean'],
+            'is_call_other' => ['required', 'boolean'],
+            'total_price' => ['required', 'numeric'],
+            'store_province_id' => ['integer'],
+            'store_province_name' => ['string'],
+            'store_district_id' => ['integer'],
+            'store_district_name' => ['string'],
+            'store_address_id' => ['integer'],
+            'store_address_name' => ['string'],
+            'customer_province_id' => ['integer'],
+            'customer_province_name' => ['string'],
+            'customer_district_id' => ['integer'],
+            'customer_district_name' => ['string'],
+            'payment_method_id' => ['integer'],
+            'payment_method_name' => ['string'],
+            'status' => ['integer'],
+        ]);
+
+        $affected = ProductOrder::where('id', $request->id)
+        ->update([
+            'name' => $request->name,
+            'phone_number' => $request->phone_number,
+            'email' => $request->email,
+            'delivery_method' => $request->delivery_method,
+            'customer_address' => $request->customer_address,
+            'other_request' => $request->other_request,
+            'is_invoice' => $request->is_invoice,
+            'is_call_other' => $request->is_call_other,
+            'total_price' => $request->total_price,
+            'store_province_id' => $request->store_province_id,
+            'store_province_name' => $request->store_province_name,
+            'store_district_id' => $request->store_district_id,
+            'store_district_name' => $request->store_district_name,
+            'store_address_id' => $request->store_address_id,
+            'store_address_name' => $request->store_address_name,
+            'customer_province_id' => $request->customer_province_id,
+            'customer_province_name' => $request->customer_province_name,
+            'customer_district_id' => $request->customer_district_id,
+            'customer_district_name' => $request->customer_district_name,
+            'payment_method_id' => $request->payment_method_id,
+            'payment_method_name' => $request->payment_method_name,
+            'status' => $request->status,
         ]);
 
         return [

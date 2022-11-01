@@ -20,10 +20,10 @@ class ProductOrderFactory extends Factory
      */
     public function definition()
     {
-        $storeAddressIds = Store::where('province_address_id', 1)->where('district_address_id', 1)->pluck('id')->toArray();
-        $provinceIds = CategoryVnProvince::pluck('id')->toArray();
-        $districtIds = CategoryVnDistrict::pluck('id')->toArray();
-        $paymentMethodIds = PaymentMethod::pluck('id')->toArray();
+        $storeAddress = fake()->randomElement(Store::all());
+        $province = fake()->randomElement(CategoryVnProvince::all());
+        $district = fake()->randomElement(CategoryVnDistrict::all());
+        $paymentMethod = fake()->randomElement(PaymentMethod::all());
         return [
             //
             'name' => fake()->name(),
@@ -31,7 +31,7 @@ class ProductOrderFactory extends Factory
             'email' => fake()->email(),
             'delivery_method' => fake()->boolean(),
             'customer_address' => fake()->address(),
-            'other_request' => fake()->paragraph(),
+            'other_request' => fake()->name(),
             'is_invoice' => fake()->boolean(),
             'is_call_other' => fake()->boolean(),
             'total_price' => fake()->randomFloat(2, 0, 200000),
@@ -41,13 +41,15 @@ class ProductOrderFactory extends Factory
             'store_province_name' => fake()->name(),
             'store_district_id' => 1,
             'store_district_name' => fake()->name(),
-            'store_address_id' => fake()->randomElement($storeAddressIds),
+            'store_address_id' => $storeAddress->id,
+            'store_address_name' => $storeAddress->name,
 
-            'customer_province_id' => fake()->randomElement($provinceIds),
-            'customer_province_name' => fake()->name(),
-            'customer_district_id' => fake()->randomElement($districtIds),
-            'customer_district_name' => fake()->name(),
-            'payment_method_id' => fake()->randomElement($paymentMethodIds),
+            'customer_province_id' => $province->id,
+            'customer_province_name' => $province->name,
+            'customer_district_id' => $district->id,
+            'customer_district_name' => $district->name,
+            'payment_method_id' => $paymentMethod->id,
+            'payment_method_name' => $paymentMethod->name,
         ];
     }
 }

@@ -33,6 +33,7 @@ return new class extends Migration
             $table->unsignedBigInteger('store_district_id')->nullable();
             $table->string('store_district_name')->nullable();
             $table->unsignedBigInteger('store_address_id')->nullable();
+            $table->string('store_address_name')->nullable();
 
             $table->unsignedBigInteger('customer_province_id')->nullable();
             $table->string('customer_province_name')->nullable();

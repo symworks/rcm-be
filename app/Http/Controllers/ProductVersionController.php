@@ -23,11 +23,12 @@ class ProductVersionController extends Controller
 
         $results = [];
 
-        $queryBuilder = DB::table('product_versions');
+        $queryBuilder = DB::table('product_versions')
+        ->join('products', 'product_versions.product_id', '=', 'products.id');
         if ($request->has('fields')) {
-            $queryBuilder = $queryBuilder->select($request->fields);
+            $queryBuilder = $queryBuilder->select($request->fields, 'products.average_evaluation');
         } else {
-            $queryBuilder = $queryBuilder->select('*');
+            $queryBuilder = $queryBuilder->select('product_versions.*', 'products.average_evaluation');
         }
 
         if ($request->has('match_col') && $request->has('match_key')) {

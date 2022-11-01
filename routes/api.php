@@ -21,14 +21,11 @@ use App\Http\Controllers\ProductEvaluateController;
 use App\Http\Controllers\ProductImageController;
 use App\Http\Controllers\ProductOrderController;
 use App\Http\Controllers\ProductOrderDetailController;
-use App\Http\Controllers\ProductTagController;
 use App\Http\Controllers\ProductTypeController;
 use App\Http\Controllers\ProductVersionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\UserController;
-use App\Models\CategoryCurrency;
-use App\Models\CategoryNation;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -282,77 +279,13 @@ Route::get('/product_order', [ProductOrderController::class, 'index']);
 
 Route::post('/product_order', [ProductOrderController::class, 'store']);
 
+Route::patch('/product_order', [ProductOrderController::class, 'update'])
+    ->middleware('role:Admin');
+
+Route::delete('/product_order/{id}', [ProductOrderController::class, 'destroy'])
+    ->middleware('role:Admin');
+
 Route::patch('/product_order/select_method', [ProductOrderController::class, 'selectMethod']);
 
 // Product Order Detail
 Route::post('/product_order_detail', [ProductOrderDetailController::class, 'store']);
-
-Route::group(['middleware' => ['auth:sanctum']], function() {
-    Route::get('/role/{user_id}', [RoleController::class, 'index']);
-
-    Route::patch('/role/{id}', [RoleController::class, 'update'])
-        ->middleware('role:Admin');
-
-    Route::post('/role', [RoleController::class, 'store'])
-        ->middleware('role:Admin');
-
-    Route::delete('/role/{id}', [RoleController::class, 'destroy'])
-        ->middleware('role:Admin');
-
-    Route::get('/category_nation', [CategoryNation::class, 'index']);
-
-    Route::post('/category_nation', [CategoryNation::class, 'store'])
-        ->middleware('role:SupperUser');
-    
-    Route::patch('/category_nation/{id}', [CategoryNation::class, 'update'])
-        ->middleware('role:SupperUser');
-
-    Route::delete('/category_nation/{id}', [CategoryNation::class, 'destroy'])
-        ->middleware('role:SupperUser');
-
-    Route::get('/category_currency', [CategoryCurrency::class, 'index']);
-
-    Route::post('/category_currency', [CategoryCurrency::class, 'store'])
-        ->middleware('role:SupperUser');
-
-    Route::patch('/category_currency/{id}', [CategoryCurrency::class, 'update'])
-        ->middleware('role:SupperUser');
-    
-    Route::delete('/category_currency/{id}', [CategoryCurrency::class, 'destroy'])
-        ->middleware('role:SupperUser');
-
-    Route::post('/product_brand', [ProductBrandController::class, 'store'])
-        ->middleware('role:Admin');
-
-    Route::patch('/product_brand/{id}', [ProductBrandController::class, 'update'])
-        ->middleware('role:Admin');
-
-    Route::delete('/product_brand/{id}', [ProductBrandController::class, 'delete'])
-        ->middleware('role:Admin');
-
-    Route::patch('/product/{id}', [ProductController::class, 'update'])
-        ->middleware('role:Admin');
-
-    Route::delete('/product/{id}', [ProductController::class, 'destroy'])
-        ->middleware('role:Admin');
-
-    Route::get('/product_tag/{product_id}', [ProductTagController::class, 'index']);
-
-    Route::post('/product_tag', [ProductTagController::class, 'store'])
-        ->middleware('role:Admin');
-    
-    Route::patch('/product_tag/{id}', [ProductTagController::class, 'update'])
-        ->middleware('role:Admin');
-
-    Route::delete('/product_tag/{id}', [ProductTagController::class, 'delete'])
-        ->middleware('role:Admin');
-
-    Route::post('/price_range', [PriceRangeController::class, 'store'])
-        ->middleware('role:Admin');
-    
-    Route::patch('/price_range/{id}', [PriceRangeController::class, 'update'])
-        ->middleware('role:Admin');
-
-    Route::delete('price_range/{id}', [PriceRangeController::class, 'delete'])
-        ->middleware('role:Admin');
-});

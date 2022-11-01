@@ -47,6 +47,7 @@ class ProductOrder extends Model
         'user_id',
         'status',
         'payment_method_id',
+        'payment_method_name',
     ];
 
     protected $attributes = [

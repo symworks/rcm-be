@@ -20,6 +20,9 @@ return new class extends Migration
 
             $table->unsignedBigInteger('product_order_id')->nullable();
             $table->unsignedBigInteger('product_id')->nullable();
+
+            $table->foreign('product_order_id')->references('id')->on('product_orders')->onDelete('cascade');
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
         });
     }
 
