@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreProductTypeRequest;
-use App\Http\Requests\UpdateProductTypeRequest;
 use App\Models\ProductType;
 use Illuminate\Http\Request;
 

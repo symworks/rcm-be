@@ -39,7 +39,7 @@ class EnsureUserHasRole
             return $next($request);
         }
 
-        if ($this->hasRole($roles, $role)) {
+        if (!$this->hasRole($roles, $role)) {
             return response()->json(
                 [
                     'error_code' => '400',

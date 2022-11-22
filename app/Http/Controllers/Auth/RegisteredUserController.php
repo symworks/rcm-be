@@ -32,6 +32,9 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'anonymous_user' => true,
+            'status' => User::STATUS_NEED_EMAIL_VERIFICATION,
+            'avatar' => 'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200',
         ]);
 
         event(new Registered($user));
