@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ProductImage;
 use App\Models\ProductVersion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -112,6 +113,21 @@ class ProductVersionController extends Controller
                 'insertedId' => $productVersion->id,
             ]
         ];
+    }
+
+    public function storeImage(Request $request) {
+        $request->validate([
+            'image' => 'required|image|mimes:png,jpg,jpeg|max:2048',
+            'product_id' => 'required',
+        ]);
+
+        $imageName = time().'.'.$request->image->extension();
+        $productImage = new ProductImage();
+        $productImage->image_url = 'images/'.$imageName;
+        $productImage->product_id = $request->product_id;
+
+        $request->image->move(public_path('images'), $imageName);
+        $productImage->save();
     }
 
     /**
